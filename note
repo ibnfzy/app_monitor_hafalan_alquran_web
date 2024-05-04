@@ -1,0 +1,15 @@
+1. Buat grafik mengenai hafalan siswa sesuai dengan kelas yg diajar
+2. Print out Hafalan dan absensi ubah "bulukumba " jadi "Makassar"
+3. Pada menu "Hafalan" Hanya berisikan hafalan siswa Yg diajarkan saja. Jadi Guru kelas 1 hanya melihat hafalan siswa kelas 1
+4. pada halaman operator di menu "Siswa" ubah posisi Nis baru nama siswa Pada saat tambah data dan edit.
+5. Nis Jadi NISN
+6. Pada menu hafalan (halaman guru) terdapat 3 opsi 
+     -Tahsin
+     -Muroja'ah 
+     -Hafalan baru
+jadi guru memilih tabel yang mau di inputkan, dan orang tua nanti akan melihat langsung ke-3 tabel tersebut seperti pada foto kartu kontrol pegangan guru.
+7. Pada halaman Utama web ubah background Fotonnya Sesuai dengan 3 foto yang di kirim (kalau bisa yang bergerak/bergantian/sembarang kak)
+8. pada halaman utama web disamping "Home" tambahkan menu "kegiatan" yg berisikan foto dan nama kegiatan (operator nanti akan bantu menambahkan jika ada tambahan foto dan kegiatan)
+9. laporan hafalan dihapus dan diganti "rekap nilai"
+10. Tambahkan menu "rekap nilai" pada aktor orang tua dan guru. seperti bentuk dokumen rekap nilai yang di kirim
+11. Tulisan table guru jadi tabel guru
