@@ -118,11 +118,11 @@
           <div class="mb-3">
             <label for="nama_guru" class="form-label">Absensi</label>
             <select name="absensi" id="absensis-edit" class="form-control">
-              <option value="hadir" class="text-bg-success">1. Hadir</option>
-              <option value="izin" class="text-bg-warning">2. Izin</option>
-              <option value="sakit" class="text-bg-warning">3. Sakit</option>
-              <option value="alpa" class="text-bg-danger">4. Alpa</option>
-              <option value="tanpa_keterangan" class="text-bg-danger">5. Tanpa Keterangan</option>
+              <option value="Hadir" class="text-bg-success">1. Hadir</option>
+              <option value="Izin" class="text-bg-warning">2. Izin</option>
+              <option value="Sakit" class="text-bg-warning">3. Sakit</option>
+              <option value="Alpa" class="text-bg-danger">4. Alpa</option>
+              <option value="Tanpa Keterangan" class="text-bg-danger">5. Tanpa Keterangan</option>
             </select>
           </div>
 
@@ -154,11 +154,11 @@
           <div class="mb-3">
             <label for="nama_guru" class="form-label">Absensi</label>
             <select name="absensi" id="absensi" class="form-control">
-              <option value="hadir" class="text-bg-success">1. Hadir</option>
-              <option value="izin" class="text-bg-warning">2. Izin</option>
-              <option value="sakit" class="text-bg-warning">3. Sakit</option>
-              <option value="alpa" class="text-bg-danger">4. Alpa</option>
-              <option value="tanpa_keterangan" class="text-bg-danger">5. Tanpa Keterangan</option>
+              <option value="Hadir" class="text-bg-success">1. Hadir</option>
+              <option value="Izin" class="text-bg-warning">2. Izin</option>
+              <option value="Sakit" class="text-bg-warning">3. Sakit</option>
+              <option value="Alpa" class="text-bg-danger">4. Alpa</option>
+              <option value="Tanpa Keterangan" class="text-bg-danger">5. Tanpa Keterangan</option>
             </select>
           </div>
 

@@ -12,14 +12,23 @@ class Siswa extends Seeder
         $faker = Factory::create();
 
         for ($i = 0; $i < 200; $i++) {
+            $nisn = rand(1000000000, 9999999999);
+
             $data = [
                 'id_kelas' => rand(1, 2), // Ganti 10 dengan jumlah kelas yang tersedia
                 'kelas' => 'Kelas ' . rand(1, 2), // Ganti 5 dengan jumlah kelas yang tersedia
-                'nisn' => rand(1000000000, 9999999999),
+                'nisn' => $nisn,
                 'nama_siswa' => $faker->firstName()
             ];
 
+            $dataOrangTua = [
+                'nisn_anak' => $nisn,
+                'nama_orang_tua' => $faker->firstName(),
+                'password' => password_hash('123456', PASSWORD_DEFAULT)
+            ];
+
             $this->db->table('siswa')->insert($data);
+            $this->db->table('orang_tua')->insert($dataOrangTua);
         }
     }
 }

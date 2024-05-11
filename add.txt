@@ -1,0 +1,23 @@
+/API/InformasiSiswa/(nisn)
+return 
+  data (siswa, total_hafalan_berhasil, total_kehadiran, total_alfa, total_izin, total_sakit, total_tanpa_keterangan)
+
+/API/AbsenSiswa/(nisn)
+return
+  data (absensi_siswa[])
+
+/API/InformasiGuru/(nisn)
+return
+  data (guru)
+
+/API/Hafalan/Tahsin/(nisn)
+return
+  data (hafalan_tahsin)
+
+/API/Hafalan/Murojaah/(nisn)
+return
+  data (hafalan_murojaah)
+
+/API/Hafalan/Baru/(nisn)
+return
+  data (hafalan_baru)

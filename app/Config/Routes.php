@@ -64,4 +64,8 @@ $routes->group('OperatorPanel', function (RouteCollection $routes) {
 
 $routes->group('API', function (RouteCollection $routes) {
   $routes->post('Login/OrangTua', 'API::login_orang_tua');
+  $routes->get('InformasiSiswa/(:num)', 'API::informasi_siswa/$1');
+  $routes->get('AbsenSiswa/(:num)', 'API::absensi_siswa/$1');
+  $routes->get('InformasiGuru/(:num)', 'API::informasi_guru/$1');
+  $routes->get('Hafalan/(:num)', 'API::hafalan/$1');
 });
