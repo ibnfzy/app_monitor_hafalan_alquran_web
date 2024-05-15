@@ -6,8 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-
-$routes->get('404', 'Home::notonline');
+$routes->get('Home', 'Home::new_home');
 
 $routes->group('Login', function (RouteCollection $routes) {
   $routes->get('Guru', 'GuruLogin::index');
@@ -34,8 +33,15 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->post('Guru/Password', 'GuruController::edit_password');
   $routes->post('Guru/Foto', 'GuruController::edit_foto');
 
-  $routes->get('Laporan', 'GuruController::laporan');
+  $routes->get('RekapNilai', 'GuruController::rekap_nilai');
   $routes->get('Al-Quran', 'GuruController::alquran');
+
+  $routes->get('Chart', 'GuruController::chart');
+  $routes->get('Chart/Random', 'GuruController::getDataChart');
+  $routes->get('Chart/Select/(:num)', 'GuruController::getDataChartSelect/$1');
+
+  $routes->get('RekapNilai', 'GuruController::rekap');
+  $routes->post('RekapNilai', 'GuruController::render_rekap');
 });
 
 $routes->group('OperatorPanel', function (RouteCollection $routes) {

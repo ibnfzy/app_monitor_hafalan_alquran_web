@@ -13,21 +13,22 @@
           <tr>
             <th>#</th>
             <th>Nama Kelas</th>
-            <th>Nama Guru</th>
+            <th>Semester</th>
+            <th>Tahun Ajaran</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $key + 1; ?></td>
-            <td><?= $item['nama_kelas'] ?></td>
-            <td><?= $item['nama_guru'] ?></td>
-            <td class="btn-group">
-              <a href="/GuruPanel/<?= $item['id_kelas'] ?>" class="btn btn-primary">Hafalan</a>
-              <a href="/GuruPanel/Absensi/<?= $item['id_kelas'] ?>" class="btn btn-info">Absensi</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $key + 1; ?></td>
+              <td><?= $item['nama_kelas'] ?></td>
+              <td><?= $item['nama_guru'] ?></td>
+              <td class="btn-group">
+                <a href="/GuruPanel/<?= $item['id_kelas'] ?>" class="btn btn-primary">Hafalan</a>
+                <a href="/GuruPanel/Absensi/<?= $item['id_kelas'] ?>" class="btn btn-info">Absensi</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>

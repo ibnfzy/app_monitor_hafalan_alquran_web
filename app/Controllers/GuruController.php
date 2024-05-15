@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use CodeIgniter\Database\RawSql;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class GuruController extends BaseController
@@ -18,7 +19,7 @@ class GuruController extends BaseController
     {
         return view('guru/biodata_guru', [
             'dataGuru' => $this->db->table('guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
-            'data' => $this->db->table('kelas')->join('guru', 'guru.id_guru = kelas.id_guru', 'left')->where('kelas.id_guru', session()->get('id_guru'))->get()->getResultArray(),
+            'data' => $this->db->table('kelas')->join('semester', 'semester.id_semester = kelas.id_semester', 'left')->where('kelas.id_guru', session()->get('id_guru'))->get()->getResultArray(),
             'dataKelasGuru' => $this->db->table('kelas')->where('id_guru', session()->get('id_guru'))->countAllResults(),
             'dataSiswa' => count($this->db->table('siswa')->whereIn('id_kelas', $this->db->table('kelas')->select('id_kelas')->where('id_guru', session()->get('id_guru')))->select('id_siswa')->get()->getResultArray())
         ]);
@@ -311,5 +312,112 @@ class GuruController extends BaseController
         return view('guru/alquran', [
             'data' => $this->db->table('al_quran_surah')->get()->getResultArray()
         ]);
+    }
+
+    public function chart()
+    {
+        return view('guru/chart', [
+            'data' => $this->db->table('siswa')->select('id_siswa, nama_siswa, nisn')->get()->getResultArray()
+        ]);
+    }
+
+    public function getDataChart()
+    {
+        $getRandomSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa')->orderBy('id_siswa', 'RAND()')->limit(5)->get()->getRowArray();
+
+        $getDistinctNamaSurah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah'))->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('nama_surah')->get()->getResultArray();
+
+        $getSetoranHafalan = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), jilid, id_siswa'))->where('jilid', 'fasih')->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('nama_surah')->get()->getResultArray();
+
+        $getMurojaah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), murojaah, id_siswa'))->where('id_siswa', $getRandomSiswa['id_siswa'])->where('murojaah', 1)->groupBy('nama_surah')->get()->getResultArray();
+
+        $setoranHafalanData = [];
+        foreach ($getSetoranHafalan as $item) {
+            $setoranHafalanData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        }
+
+        $murojaahData = [];
+        foreach ($getMurojaah as $item) {
+            $murojaahData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        }
+
+        $namaSurah = array_column($getDistinctNamaSurah, 'nama_surah');
+
+        $datasets = [
+            [
+                'label' => 'Setoran Hafalan',
+                'data' => $setoranHafalanData,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ],
+            [
+                'label' => "Muroja'ah",
+                'data' => $murojaahData,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ]
+        ];
+
+        $data = [
+            'datasets' => $datasets,
+            'label' => $namaSurah,
+            'id_siswa' => $getRandomSiswa['id_siswa'],
+            'nama_siswa' => $getRandomSiswa['nama_siswa']
+        ];
+
+        return $this->response->setJSON($data);
+    }
+
+    public function getDataChartSelect($id_siswa)
+    {
+        $getDataSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa')->where('id_siswa', $id_siswa)->get()->getRowArray();
+
+        $getDistinctSurah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah'))->where('id_siswa', $id_siswa)->groupBy('nama_surah')->get()->getResultArray();
+
+        $getSetoranHafalan = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), jilid, id_siswa'))->where('jilid', 'fasih')->where('id_siswa', $id_siswa)->groupBy('nama_surah')->get()->getResultArray();
+
+        $getMurojaah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), murojaah, id_siswa'))->where('id_siswa', $id_siswa)->where('murojaah', 1)->groupBy('nama_surah')->get()->getResultArray();
+
+        $setoranHafalanData = [];
+        foreach ($getSetoranHafalan as $item) {
+            $setoranHafalanData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        }
+
+        $murojaahData = [];
+        foreach ($getMurojaah as $item) {
+            $murojaahData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        }
+
+        $namaSurah = array_column($getDistinctSurah, 'nama_surah');
+
+        $datasets = [
+            [
+                'label' => 'Setoran Hafalan',
+                'data' => $setoranHafalanData,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ],
+            [
+                'label' => "Muroja'ah",
+                'data' => $murojaahData,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ]
+        ];
+
+        $data = [
+            'datasets' => $datasets,
+            'label' => $namaSurah,
+            'id_siswa' => $getDataSiswa['id_siswa'],
+            'nama_siswa' => $getDataSiswa['nama_siswa']
+        ];
+
+        return $this->response->setJSON($data);
+    }
+
+    public function render_rekap()
+    {
+        return view('guru/render_rekap', []);
+    }
+
+    public function rekap()
+    {
+        return view('guru/rekap');
     }
 }

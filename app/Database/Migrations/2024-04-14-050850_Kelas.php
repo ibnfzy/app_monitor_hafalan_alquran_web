@@ -16,6 +16,9 @@ class Kelas extends Migration
             'id_guru' => [
                 'type' => 'INT'
             ],
+            'id_semester' => [
+                'type' => 'INT'
+            ],
             'nama_kelas' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255

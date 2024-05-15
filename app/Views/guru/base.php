@@ -16,7 +16,7 @@
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 </head>
 
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed" id="root">
   <?= $this->include('guru/layouts/navbar'); ?>
   <div id="layoutSidenav"
     style="background: url('<?= base_url('bg.jpg') ?>') center center/cover no-repeat fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
@@ -47,10 +47,18 @@
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
   <script src="<?= base_url() ?>panel/js/scripts.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
   <script type="text/javascript">
   let table = new DataTable('#datatables');
-  $('.select2').select2({
+  $('.select2-chart').select2({
     dropdownParent: $('#surahParent'),
+    // theme: 'bootstrap-5',
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+  });
+
+  $('.select2-siswa').select2({
+    dropdownParent: $('#siswaParent'),
     // theme: 'bootstrap-5',
     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
     placeholder: $(this).data('placeholder'),

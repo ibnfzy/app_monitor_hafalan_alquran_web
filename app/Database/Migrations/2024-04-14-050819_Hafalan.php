@@ -47,6 +47,14 @@ class Hafalan extends Migration
             'keterangan' => [
                 'type' => 'VARCHAR',
                 'constraint' => 250
+            ],
+            'jilid' => [
+                'type' => 'VARCHAR',
+                'constraint' => 5
+            ],
+            'murojaah' => [
+                'type' => 'VARCHAR',
+                'constraint' => 1
             ]
         ]);
 

@@ -20,8 +20,7 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
         <div class="card card-primary card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/users.png"
-                alt="User profile picture">
+              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/users.png" alt="User profile picture">
             </div>
 
             <h3 class="profile-username text-center"><?= $jenisKelamin . session()->get('nama_guru'); ?></h3>
@@ -30,10 +29,10 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
 
             <ul class="list-group list-group-unbordered mb-3">
               <li class="list-group-item">
-                <b>Kelas</b> <span class="float-end"><?= $dataKelasGuru; ?></span>
+                <b>Total Kelas</b> <span class="float-end"><?= $dataKelasGuru; ?></span>
               </li>
               <li class="list-group-item">
-                <b>Murid</b> <span class="float-end"><?= $dataSiswa; ?></span>
+                <b>Total Murid</b> <span class="float-end"><?= $dataSiswa; ?></span>
               </li>
             </ul>
           </div>
@@ -71,26 +70,31 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
               <tr>
                 <th>#</th>
                 <th>Nama Kelas</th>
-                <th>Nama Guru</th>
+                <th>Semester</th>
+                <th>Tahun Ajaran</th>
+                <th>Status Semester</th>
                 <th>Jumlah Murid</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($data as $key => $item) : ?>
-              <?php $getJumlahMurid = $db->table('siswa')->where('id_kelas', $item['id_kelas'])->countAllResults(); ?>
-              <tr>
-                <td><?= $key + 1; ?></td>
-                <td><?= $item['nama_kelas'] ?></td>
-                <td><?= $item['nama_guru'] ?></td>
-                <td><?= $getJumlahMurid ?></td>
-                <td>
-                  <div class="btn-group">
-                    <a href="/GuruPanel/<?= $item['id_kelas'] ?>" class="btn btn-primary">Hafalan</a>
-                    <a href="/GuruPanel/Absensi/<?= $item['id_kelas'] ?>" class="btn btn-primary">Absensi</a>
-                  </div>
-                </td>
-              </tr>
+                <?php $getJumlahMurid = $db->table('siswa')->where('id_kelas', $item['id_kelas'])->countAllResults(); ?>
+                <tr>
+                  <td><?= $key + 1; ?></td>
+                  <td><?= $item['nama_kelas'] ?></td>
+                  <td><?= $item['semester'] ?></td>
+                  <td><?= $item['tahun_ajaran'] ?></td>
+                  <td class="text-center"><span class="badge <?= $item['is_semester_berjalan'] == 1 ? 'text-bg-success' : 'text-bg-primary' ?>"><?= $item['is_semester_berjalan'] == 1 ? 'Semester Aktif' : 'Semester Tidak Aktif' ?></span>
+                  </td>
+                  <td><?= $getJumlahMurid ?></td>
+                  <td>
+                    <div class="btn-group">
+                      <a href="/GuruPanel/<?= $item['id_kelas'] ?>" class="btn btn-primary">Hafalan</a>
+                      <a href="/GuruPanel/Absensi/<?= $item['id_kelas'] ?>" class="btn btn-primary">Absensi</a>
+                    </div>
+                  </td>
+                </tr>
               <?php endforeach ?>
             </tbody>
           </table>
@@ -182,12 +186,12 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
 <?= $this->section('script'); ?>
 
 <script>
-const editBiodata = (nama_guru, nip, kontak) => {
-  $('#nama_guru-edit').val(nama_guru)
-  $('#nip-edit').val(nip)
-  $('#kontak-edit').val(kontak)
-  $('#edit_biodata').modal('show')
-};
+  const editBiodata = (nama_guru, nip, kontak) => {
+    $('#nama_guru-edit').val(nama_guru)
+    $('#nip-edit').val(nip)
+    $('#kontak-edit').val(kontak)
+    $('#edit_biodata').modal('show')
+  };
 </script>
 
 <?= $this->endSection(); ?>
