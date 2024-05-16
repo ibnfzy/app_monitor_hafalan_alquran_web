@@ -7,6 +7,8 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('Home', 'Home::new_home');
+$routes->get('Kegiatan', 'Home::kegiatan');
+$routes->get('Kegiatan/(:num)', 'Home::kegiatan_detail/$1');
 
 $routes->group('Login', function (RouteCollection $routes) {
   $routes->get('Guru', 'GuruLogin::index');
@@ -69,6 +71,11 @@ $routes->group('OperatorPanel', function (RouteCollection $routes) {
   $routes->get('Operator/(:num)', 'OperatorController::operator_delete/$1');
 
   $routes->get('Al-Quran', 'OperatorController::alquran');
+
+  $routes->get('Kegiatan', 'OperatorController::kegiatan');
+  $routes->post('Kegiatan', 'OperatorController::kegiatan_insert');
+  $routes->post('Kegiatan/Update', 'OperatorController::kegiatan_update');
+  $routes->get('Kegiatan/(:num)', 'OperatorController::kegiatan_delete/$1');
 });
 
 $routes->group('API', function (RouteCollection $routes) {

@@ -22,9 +22,9 @@
           <div class="sb-nav-link-icon"><i class="fa-solid fa-book text-white"></i></div>
           Al-Quran Surah
         </a>
-        <a class="nav-link text-white" href="/OperatorPanel/Laporan">
-          <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt text-white"></i></div>
-          Laporan Hafalan
+        <a href="/OperatorPanel/Kegiatan" class="nav-link text-white">
+          <div class="sb-nav-link-icon"><i class="fa-regular fa-newspaper text-white"></i></div>
+          Kegiatan
         </a>
       </div>
     </div>

@@ -4,9 +4,16 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
+    protected $db;
+
+    public function __construct()
+    {
+        $this->db = \Config\Database::connect();
+    }
+
     public function index(): string
     {
-        return view('web/new_home');
+        return view('web/home');
     }
 
     public function notonline()
@@ -17,5 +24,17 @@ class Home extends BaseController
     public function new_home()
     {
         return view('web/new_home');
+    }
+
+    public function kegiatan()
+    {
+        return view('web/kegiatan', [
+            'data' => $this->db->table('kegiatan')->get()->getResultArray()
+        ]);
+    }
+
+    public function kegiatan_detail($id)
+    {
+        return view('web/kegiatan-detail');
     }
 }

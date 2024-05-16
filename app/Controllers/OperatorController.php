@@ -369,4 +369,131 @@ class OperatorController extends BaseController
             'data' => $this->db->table('al_quran_surah')->get()->getResultArray()
         ]);
     }
+
+    public function kegiatan()
+    {
+        return view('operator/kegiatan', [
+            'data' => $this->db->table('kegiatan')->get()->getResultArray()
+        ]);
+    }
+
+    public function kegiatan_insert()
+    {
+        $rules = [
+            'judul' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Judul tidak boleh kosong'
+                ]
+            ],
+            'deskripsi' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Deskripsi tidak boleh kosong'
+                ]
+            ],
+            'gambar' => [
+                'rules' => 'uploaded[gambar]|max_size[gambar,1024]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'Gambar tidak boleh kosong',
+                    'max_size' => 'Ukuran gambar terlalu besar',
+                    'is_image' => 'Yang anda pilih bukan gambar',
+                    'mime_in' => 'Yang anda pilih bukan gambar'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $file = $this->request->getFile('gambar');
+
+        $fileName = $file->getRandomName();
+
+        if (!$file->hasMoved()) {
+            $file->move('uploads', $fileName);
+        }
+
+        $this->db->table('kegiatan')->insert([
+            'judul' => $this->request->getPost('judul'),
+            'deskripsi' => $this->request->getPost('deskripsi'),
+            'gambar' => $fileName
+        ]);
+
+        return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'success')->with('message', 'Data berhasil ditambahkan');
+    }
+
+    public function kegiatan_delete($id)
+    {
+        $getData = $this->db->table('kegiatan')->where('id_kegiatan', $id)->get()->getRowArray();
+
+        $pathFile = realpath('uploads/' . $getData['gambar']);
+
+        if (is_writable($pathFile)) {
+            unlink($pathFile);
+        }
+
+        $this->db->table('kegiatan')->where('id_kegiatan', $id)->delete();
+
+        return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil dihapus');
+    }
+
+    public function kegiatan_update()
+    {
+        $file = $this->request->getFile('gambar');
+
+        $rules = [
+            'id_kegiatan' => [
+                'rules' => 'required',
+            ],
+            'judul' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Judul tidak boleh kosong'
+                ]
+            ],
+            'deskripsi' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Deskripsi tidak boleh kosong'
+                ]
+            ],
+        ];
+
+        if ($file->isValid()) {
+            $rules['gambar'] = [
+                'rules' => 'max_size[gambar,1024]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'max_size' => 'Ukuran gambar terlalu besar',
+                    'is_image' => 'Yang anda pilih bukan gambar',
+                    'mime_in' => 'Yang anda pilih bukan gambar'
+                ]
+            ];
+        }
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        if ($file->isValid()) {
+            $fileName = $file->getRandomName();
+
+            if (!$file->hasMoved()) {
+                $file->move('uploads', $fileName);
+            }
+
+            $this->db->table('kegiatan')->where('id_kegiatan', $this->request->getPost('id_kegiatan'))->update([
+                'gambar' => $fileName,
+            ]);
+        }
+
+        $this->db->table('kegiatan')->where('id_kegiatan', $this->request->getPost('id_kegiatan'))->update([
+            'judul' => $this->request->getPost('judul'),
+            'deskripsi' => $this->request->getPost('deskripsi'),
+        ]);
+
+        return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'success')->with('message', 'Data berhasil diupdate');
+    }
 }
