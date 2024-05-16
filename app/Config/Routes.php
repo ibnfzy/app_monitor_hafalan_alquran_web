@@ -42,6 +42,9 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
 
   $routes->get('RekapNilai', 'GuruController::rekap');
   $routes->post('RekapNilai', 'GuruController::render_rekap');
+  $routes->get('RekapNilai/Delete/(:num)', 'GuruController::rekap_delete/$1');
+  $routes->post('GetBlobURI/(:num)', 'GuruController::getBlobPDF/$1');
+  $routes->get('RekapNilai/(:num)', 'GuruController::see_blob_pdf/$1');
 });
 
 $routes->group('OperatorPanel', function (RouteCollection $routes) {
@@ -74,4 +77,5 @@ $routes->group('API', function (RouteCollection $routes) {
   $routes->get('AbsenSiswa/(:num)', 'API::absensi_siswa/$1');
   $routes->get('InformasiGuru/(:num)', 'API::informasi_guru/$1');
   $routes->get('Hafalan/(:num)', 'API::hafalan/$1');
+  $routes->get('PDF/(:num)', 'API::webview_blobpdf/$1');
 });

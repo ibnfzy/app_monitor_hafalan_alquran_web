@@ -90,4 +90,11 @@ class API extends BaseController
             ]
         ]);
     }
+
+    public function webview_blobpdf($id_rekap_nilai)
+    {
+        $data = $this->db->table('rekap_nilai')->where('id_rekap_nilai', $id_rekap_nilai)->get()->getRowArray();
+
+        echo "<iframe style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none;' src='/uploads/" . $data['blob_pdf'] . "'></iframe>";
+    }
 }

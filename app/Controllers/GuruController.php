@@ -3,11 +3,12 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Database\RawSql;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class GuruController extends BaseController
 {
+    use ResponseTrait;
     protected $db;
 
     public function __construct()
@@ -19,7 +20,7 @@ class GuruController extends BaseController
     {
         return view('guru/biodata_guru', [
             'dataGuru' => $this->db->table('guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
-            'data' => $this->db->table('kelas')->join('semester', 'semester.id_semester = kelas.id_semester', 'left')->where('kelas.id_guru', session()->get('id_guru'))->get()->getResultArray(),
+            'data' => $this->db->table('kelas')->where('kelas.id_guru', session()->get('id_guru'))->get()->getResultArray(),
             'dataKelasGuru' => $this->db->table('kelas')->where('id_guru', session()->get('id_guru'))->countAllResults(),
             'dataSiswa' => count($this->db->table('siswa')->whereIn('id_kelas', $this->db->table('kelas')->select('id_kelas')->where('id_guru', session()->get('id_guru')))->select('id_siswa')->get()->getResultArray())
         ]);
@@ -413,11 +414,178 @@ class GuruController extends BaseController
 
     public function render_rekap()
     {
-        return view('guru/render_rekap', []);
+        $rules = [
+            'id_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Siswa harus dipilih, tidak boleh kosong'
+                ]
+            ],
+            'halaqoh' => [
+                'rules' => 'required|max_length[150]',
+                'errors' => [
+                    'required' => 'Halaqoh harus dipilih, tidak boleh kosong',
+                    'max_length' => 'Maksimal 150 karakter'
+                ]
+            ],
+            'pres_adab_halaqoh' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Prestasi Adab Halaqoh harus dipilih, Tidak boleh kosong'
+                ]
+            ],
+            'pres_tahsin' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Prestasi Tahsin harus dipilih, Tidak boleh kosong'
+                ]
+            ],
+            'pres_tahfidz' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Prestasi Tahfidz harus dipilih, Tidak boleh kosong'
+                ]
+            ],
+            'pres_murojaah' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Prestasi Murojaah harus dipilih, Tidak boleh kosong'
+                ]
+            ],
+            'keterangan' => [
+                'rules' => 'required|max_length[500]',
+                'errors' => [
+                    'required' => 'Keterangan harus diisi, Tidak boleh kosong',
+                    'max_length' => 'Maksimal 500 karakter'
+                ]
+            ],
+            'nilai_uts' => [
+                'rules' => 'required|max_length[3]',
+                'errors' => [
+                    'required' => 'Nilai UTS harus diisi, Tidak boleh kosong',
+                    'max_length' => 'Maksimal 3 karakter'
+                ]
+            ],
+            'nilai_tahsin' => [
+                'rules' => 'required|max_length[3]',
+                'errors' => [
+                    'required' => 'Nilai Tahsin harus diisi, Tidak boleh kosong',
+                ]
+            ],
+            'action' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Aksi harus dipilih, Tidak boleh kosong'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('GuruPanel/'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $checkAction = $this->request->getPost('action');
+
+        $getSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa, id_kelas')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
+
+        $getKelas = $this->db->table('kelas')->select('id_kelas, id_guru, semester, tahun_ajaran, nama_kelas')->where('id_kelas', $getSiswa['id_kelas'])->get()->getRowArray();
+
+        $getTotalSakit = $this->db->table('absensi')->select('SUM(keterangan) as total_sakit')->where('keterangan', 'sakit')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+
+        $getTotalIzin = $this->db->table('absensi')->select('SUM(keterangan) as total_izin')->where('keterangan', 'izin')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+
+        $getTotalAlfa = $this->db->table('absensi')->select('SUM(keterangan) as total_alfa')->where('keterangan', 'alpa')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+
+        $data = [
+            'id_siswa' => $this->request->getPost('id_siswa'),
+            'id_guru' => session()->get('id_guru'),
+            'nama_guru' => session()->get('nama_guru'),
+            'nama_siswa' => $getSiswa['nama_siswa'],
+            'kelas' => $getKelas['nama_kelas'],
+            'semester' => $getKelas['semester'],
+            'tahun_ajaran' => $getKelas['tahun_ajaran'],
+            'halaqoh' => $this->request->getPost('halaqoh'),
+            'prestasi_adab_halaqoh' => $this->request->getPost('pres_adab_halaqoh'),
+            'prestasi_tahsin' => $this->request->getPost('pres_tahsin'),
+            'prestasi_tahfidz' => $this->request->getPost('pres_tahfidz'),
+            'prestasi_murojaah' => $this->request->getPost('pres_murojaah'),
+            'nilai_uts' => $this->request->getPost('nilai_uts'),
+            'nilai_tahsin' => $this->request->getPost('nilai_tahsin'),
+            'keterangan_tambahan' => $this->request->getPost('keterangan'),
+            'sakit' => $getTotalSakit['total_sakit'] ?? 0,
+            'izin' => $getTotalIzin['total_izin'] ?? 0,
+            'alpa' => $getTotalAlfa['total_alfa'] ?? 0,
+            'id_rekap_nilai' => 0
+        ];
+
+        if ($checkAction == 'both') {
+            $checkUser = $this->db->table('rekap_nilai')->where([
+                'id_siswa' => $this->request->getPost('id_siswa'),
+                'id_guru' => session()->get('id_guru'),
+                'semester' => $getKelas['semester'],
+                'tahun_ajaran' => $getKelas['tahun_ajaran']
+            ])->get()->getResultArray();
+
+            if (count($checkUser) > 0) {
+                return redirect()->to(base_url('GuruPanel/RekapNilai'))->with('type-status', 'error')->with('message', 'Data gagal disimpan, Data sudah ada. Silahkan hapus data yang lama dan simpan kembali');
+            }
+
+            $check = $this->db->table('rekap_nilai')->insert($data);
+            $data['id_rekap_nilai'] = $this->db->insertID();
+        }
+
+        return view('guru/render_rekap', $data);
     }
 
-    public function rekap()
+    public function rekap_nilai()
     {
-        return view('guru/rekap');
+        $data = $this->db->table('rekap_nilai');
+
+        $data->where('id_guru', session()->get('id_guru'));
+
+        if ($this->request->getMethod() === 'post') {
+            $data->where($this->request->getPost());
+        }
+
+        return view('guru/rekap', [
+            'data' => $data->get()->getResultArray()
+        ]);
+    }
+
+    public function rekap_delete($id)
+    {
+        $getData = $this->db->table('rekap_nilai')->where('id_rekap_nilai', $id)->get()->getRowArray();
+
+        $pathFile = realpath('uploads/' . $getData['blob_pdf']);
+
+        if (is_writable($pathFile)) {
+            unlink($pathFile);
+        }
+
+        $this->db->table('rekap_nilai')->where('id_rekap_nilai', $id)->delete();
+
+
+        return redirect()->to(base_url('GuruPanel/RekapNilai'))->with('type-status', 'success')->with('message', 'Data berhasil dihapus');
+    }
+
+    public function getBlobPDF($id_rekap_nilai)
+    {
+        $filePdf = $this->request->getFile('blobUri');
+
+        if (!$filePdf->isValid()) {
+            return $this->fail('file is not valid');
+        }
+
+        $fileName = $filePdf->getRandomName();
+
+        if (!$filePdf->hasMoved()) {
+            $filePdf->move('uploads', $fileName);
+        }
+
+        $this->db->table('rekap_nilai')->where('id_rekap_nilai', $id_rekap_nilai)->update([
+            'blob_pdf' => $fileName
+        ]);
+
+        return $this->respond([], 200, 'Berhasil');
     }
 }

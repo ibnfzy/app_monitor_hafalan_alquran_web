@@ -27,6 +27,10 @@ class RekapNilai extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255
             ],
+            'kelas' => [
+                'type' => 'VARCHAR',
+                'constraint' => 1,
+            ],
             'semester' => [
                 'type' => 'VARCHAR',
                 'constraint' => 1
@@ -65,13 +69,13 @@ class RekapNilai extends Migration
             ],
             'keterangan_tambahan' => [
                 'type' => 'VARCHAR',
-                'constraint' => 255
+                'constraint' => 500
             ],
             'created_at' => [
                 'type' => 'VARCHAR',
                 'constraint' => 60
             ],
-            'absensi' => [
+            'alpa' => [
                 'type' => 'INT',
                 'constraint' => 3
             ],

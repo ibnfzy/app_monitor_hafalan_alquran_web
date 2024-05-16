@@ -37,12 +37,12 @@
           ]; ?>
 
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $key + 1; ?></td>
-            <td><?= $item['nisn'] ?></td>
-            <td><?= $item['nama_siswa'] ?></td>
-            <td>
-              <?php
+            <tr>
+              <td><?= $key + 1; ?></td>
+              <td><?= $item['nisn'] ?></td>
+              <td><?= $item['nama_siswa'] ?></td>
+              <td>
+                <?php
                 $absensi = $db->table('absensi')
                   ->where('id_siswa', $item['id_siswa'])
                   ->where('tanggal', date('Y-m-d'))
@@ -55,9 +55,9 @@
                   ->get()
                   ->getRow()->id_absensi ?? null;
                 if ($absensi === null) : ?>
-              <button class="btn btn-warning col-12" onclick="absensi('<?= $item['id_siswa'] ?>')">Belum Absen Hari
-                ini</button>
-              <?php else :
+                  <button class="btn btn-warning col-12" onclick="absensi('<?= $item['id_siswa'] ?>')">Belum Absen Hari
+                    ini</button>
+                <?php else :
                   switch ($absensi->keterangan) {
                     case 'hadir':
                       $class = 'success';
@@ -71,12 +71,11 @@
                       $class = 'danger';
                       break;
                   } ?>
-              <button class="btn btn-<?= $class ?> col-12"
-                onclick="absensi_edit('<?= $item['id_siswa'] ?>', '<?= $id_absensi ?>', '<?= $absensi->keterangan ?>')"><?= ucwords($absensi->keterangan) ?></button>
-              <?php endif ?>
-            </td>
+                  <button class="btn btn-<?= $class ?> col-12" onclick="absensi_edit('<?= $item['id_siswa'] ?>', '<?= $id_absensi ?>', '<?= $absensi->keterangan ?>')"><?= ucwords($absensi->keterangan) ?></button>
+                <?php endif ?>
+              </td>
 
-            <?php
+              <?php
               $hafalan = $db->table('absensi')
                 ->where('id_siswa', $item['id_siswa'])
                 ->where('id_kelas', $dataKelas['id_kelas'])
@@ -90,11 +89,11 @@
               }
               ?>
 
-            <td>
-              <a href="/GuruPanel/Absensi/Detail/<?= $item['id_siswa'] ?>" class="btn btn-primary">Detail Absensi
-                siswa</a>
-            </td>
-          </tr>
+              <td>
+                <a href="/GuruPanel/Absensi/Detail/<?= $item['id_siswa'] ?>" class="btn btn-primary">Detail Absensi
+                  siswa</a>
+              </td>
+            </tr>
           <?php endforeach ?>
 
         </tbody>
@@ -110,8 +109,7 @@
         <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Absensi</h1>
         <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/GuruPanel/Absensi/Update/<?= $dataKelas['id_kelas'] ?>" method="post"
-        enctype="multipart/form-data">
+      <form action="/GuruPanel/Absensi/Update/<?= $dataKelas['id_kelas'] ?>" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id_siswa" id="id_siswa-edit">
         <input type="hidden" name="id_absensi" id="id_absensi-edit">
         <div class="modal-body">
@@ -128,8 +126,7 @@
 
           <div class="mb-3">
             <label for="tanggal" class="form-label">Tanggal</label>
-            <input type="date" class="form-control text-bg-secondary" id="tanggal-edit" name="tanggal"
-              value="<?= date('Y-m-d'); ?>" readonly>
+            <input type="date" class="form-control text-bg-secondary" id="tanggal-edit" name="tanggal" value="<?= date('Y-m-d'); ?>" readonly>
           </div>
         </div>
         <div class="modal-footer">
@@ -158,14 +155,12 @@
               <option value="Izin" class="text-bg-warning">2. Izin</option>
               <option value="Sakit" class="text-bg-warning">3. Sakit</option>
               <option value="Alpa" class="text-bg-danger">4. Alpa</option>
-              <option value="Tanpa Keterangan" class="text-bg-danger">5. Tanpa Keterangan</option>
             </select>
           </div>
 
           <div class="mb-3">
             <label for="tanggal" class="form-label">Tanggal</label>
-            <input type="date" class="form-control text-bg-secondary" id="tanggal" name="tanggal"
-              value="<?= date('Y-m-d'); ?>" readonly>
+            <input type="date" class="form-control text-bg-secondary" id="tanggal" name="tanggal" value="<?= date('Y-m-d'); ?>" readonly>
           </div>
         </div>
         <div class="modal-footer">
@@ -182,21 +177,21 @@
 <?= $this->section('script'); ?>
 
 <script>
-const absensi = (id_siswa) => {
-  $('#id_siswa').val(id_siswa)
-  $('#absensi').modal('show')
-};
+  const absensi = (id_siswa) => {
+    $('#id_siswa').val(id_siswa)
+    $('#absensi').modal('show')
+  };
 
-const absensi_edit = (id_siswa, id_absensi, keterangan) => {
-  $('#id_siswa-edit').val(id_siswa)
-  $('#id_absensi-edit').val(id_absensi)
-  $('#absensis-edit option').each(function() {
-    if ($(this).val() == keterangan) {
-      $(this).attr('selected', 'selected');
-    }
-  });
-  $('#absensi-edit').modal('show')
-};
+  const absensi_edit = (id_siswa, id_absensi, keterangan) => {
+    $('#id_siswa-edit').val(id_siswa)
+    $('#id_absensi-edit').val(id_absensi)
+    $('#absensis-edit option').each(function() {
+      if ($(this).val() == keterangan) {
+        $(this).attr('selected', 'selected');
+      }
+    });
+    $('#absensi-edit').modal('show')
+  };
 </script>
 
 <?= $this->endSection(); ?>
