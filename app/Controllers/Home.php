@@ -37,6 +37,9 @@ class Home extends BaseController
 
     public function kegiatan_detail($id)
     {
-        return view('web/kegiatan-detail');
+        return view('web/kegiatan-detail', [
+            'data' => $this->db->table('kegiatan')->getWhere(['id_kegiatan' => $id])->getRowArray(),
+            'kegiatan' => $this->db->table('kegiatan')->orderBy('id_kegiatan', 'RANDOM')->get(4)->getResultArray()
+        ]);
     }
 }

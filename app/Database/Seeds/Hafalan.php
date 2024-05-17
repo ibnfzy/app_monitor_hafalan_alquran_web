@@ -8,7 +8,7 @@ class Hafalan extends Seeder
 {
     public function run()
     {
-        $getSiswaFirstRow = $this->db->table('siswa')->get()->getRowArray();
+        $getSiswaFirstRow = $this->db->table('siswa')->where('id_kelas', 2)->get()->getRowArray();
         $getKelas = $this->db->table('kelas')->where('id_kelas', $getSiswaFirstRow['id_kelas'])->get()->getRowArray();
         $getGuru = $this->db->table('guru')->where('id_guru', $getKelas['id_guru'])->get()->getRowArray();
 
@@ -20,7 +20,7 @@ class Hafalan extends Seeder
             'id_surah' => 1,
             'nama_surah' => 'Al-Fatihah',
             'ayat' => '1 - 7',
-            'keterangan' => 'lulus',
+            'keterangan' => 'hafal',
             'jilid' => 'fasih',
             'murojaah' => 0
         ]);
@@ -33,7 +33,7 @@ class Hafalan extends Seeder
             'id_surah' => 97,
             'nama_surah' => 'Al-Qadr',
             'ayat' => '1 - 5',
-            'keterangan' => 'lulus',
+            'keterangan' => 'hafal',
             'jilid' => 'fasih',
             'murojaah' => 0
         ]);
@@ -46,7 +46,7 @@ class Hafalan extends Seeder
             'id_surah' => 93,
             'nama_surah' => 'Ad-Duha',
             'ayat' => '1 - 11',
-            'keterangan' => 'belum lulus',
+            'keterangan' => 'belum hafal',
             'jilid' => 'belum',
             'murojaah' => 1
         ]);
@@ -59,7 +59,7 @@ class Hafalan extends Seeder
             'id_surah' => 93,
             'nama_surah' => 'Ad-Duha',
             'ayat' => '1 - 11',
-            'keterangan' => 'belum lulus',
+            'keterangan' => 'belum hafal',
             'jilid' => 'fasih',
             'murojaah' => 1
         ]);
@@ -72,7 +72,7 @@ class Hafalan extends Seeder
             'id_surah' => 79,
             'nama_surah' => "An-Nazi'at",
             'ayat' => '1 - 46',
-            'keterangan' => 'belum lulus',
+            'keterangan' => 'belum hafal',
             'jilid' => 'belum',
             'murojaah' => 1
         ]);
@@ -85,7 +85,7 @@ class Hafalan extends Seeder
             'id_surah' => 93,
             'nama_surah' => 'Ad-Duha',
             'ayat' => '1 - 11',
-            'keterangan' => 'lulus',
+            'keterangan' => 'hafal',
             'jilid' => 'fasih',
             'murojaah' => 0
         ]);
@@ -98,7 +98,7 @@ class Hafalan extends Seeder
             'id_surah' => 79,
             'nama_surah' => "An-Nazi'at",
             'ayat' => '1 - 46',
-            'keterangan' => 'lulus',
+            'keterangan' => 'hafal',
             'jilid' => 'fasih',
             'murojaah' => 0
         ]);

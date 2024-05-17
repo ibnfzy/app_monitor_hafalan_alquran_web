@@ -31,7 +31,7 @@
   </style>
 </head>
 
-<body>
+<body class="bg-success bg-gradient bg-opacity-10">
   <!-- Header -->
   <?= $this->include('web/layouts/navbar'); ?>
 

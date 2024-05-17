@@ -236,9 +236,10 @@
       lineColor: [0, 0, 0],
     },
     headStyles: {
-      fillColor: [0, 0, 0],
-      textColor: [255, 225, 225],
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
+      lineWidth: 0.25
     }
   })
 
@@ -255,9 +256,10 @@
       lineColor: [0, 0, 0],
     },
     headStyles: {
-      fillColor: [0, 0, 0],
-      textColor: [255, 225, 225],
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
+      lineWidth: 0.25
     }
   });
 
@@ -270,15 +272,15 @@
         '<?= $keterangan_tambahan ?>',
       ]
     ],
+    theme: 'grid',
     styles: {
-      cellWidth: 70,
       lineColor: [0, 0, 0],
     },
-    theme: 'grid',
     headStyles: {
-      fillColor: [0, 0, 0],
-      textColor: [255, 225, 225],
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
+      lineWidth: 0.25
     },
     startY: 150,
     margin: {
@@ -288,15 +290,15 @@
 
   doc.autoTable({
     html: '#absensi',
+    theme: 'grid',
     styles: {
-      cellWidth: 70,
       lineColor: [0, 0, 0],
     },
-    theme: 'grid',
     headStyles: {
-      fillColor: [0, 0, 0],
-      textColor: [255, 225, 225],
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
+      lineWidth: 0.25
     },
     startY: 150,
     margin: {

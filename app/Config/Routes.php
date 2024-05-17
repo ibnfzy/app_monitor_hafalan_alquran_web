@@ -23,12 +23,16 @@ $routes->group('Login', function (RouteCollection $routes) {
 $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->get('/', 'GuruController::index');
   $routes->get('(:num)', 'GuruController::hafalan/$1');
-  $routes->get('Detail/(:num)', 'GuruController::hafalan_detail/$1');
+  $routes->get('HafalanPDF/(:num)', 'GuruController::hafalan_detail/$1');
+  $routes->get('Hafalan/(:num)', 'GuruController::hafalan_/$1');
+  $routes->get('Hafalan/Delete/(:num)', 'GuruController::hafalan_delete/$1');
   $routes->post('/', 'GuruController::hafalan_insert');
   $routes->get('Absensi/(:num)', 'GuruController::absen/$1');
   $routes->post('Absensi/(:num)', 'GuruController::absensi_proses/$1');
   $routes->post('Absensi/Update/(:num)', 'GuruController::absensi_proses_edit/$1');
-  $routes->get('Absensi/Detail/(:num)', 'GuruController::absensi_detail/$1');
+  $routes->get('Absensi/PDF/(:num)', 'GuruController::absensi_detail/$1');
+  $routes->get('Absensi/Delete/(:num)', 'GuruController::absensi_delete/$1');
+  $routes->get('Absensi/Detail/(:num)', 'GuruController::absensi_/$1');
 
   $routes->get('Guru', 'GuruController::biodata_guru');
   $routes->post('Guru', 'GuruController::edit_biodata');

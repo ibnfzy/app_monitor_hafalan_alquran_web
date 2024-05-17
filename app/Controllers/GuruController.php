@@ -175,6 +175,31 @@ class GuruController extends BaseController
 
         $surah = $this->db->table('al_quran_surah')->where('nomor', $this->request->getPost('surah'))->get()->getRowArray();
 
+        switch ($this->request->getPost('keterangan')) {
+            case 'hafal':
+                $keterangan = 'hafal';
+                $jilid = 'fasih';
+                $murojaah = 0;
+                break;
+
+            case 'fasih':
+                $keterangan = 'belum hafal';
+                $jilid = 'fasih';
+                $murojaah = 1;
+                break;
+
+            case 'belum':
+                $keterangan = 'belum hafal';
+                $jilid = 'belum fasih';
+                $murojaah = 1;
+
+            default:
+                $keterangan = 'belum hafal';
+                $jilid = 'belum fasih';
+                $murojaah = 1;
+                break;
+        }
+
         $this->db->table('hafalan')->insert([
             'id_siswa' => $this->request->getPost('id_siswa'),
             'id_guru' => session()->get('id_guru'),
@@ -184,7 +209,9 @@ class GuruController extends BaseController
             'nama_surah' => $surah['nama_latin'],
             'ayat' => $this->request->getPost('nomor_ayat'),
             'tanggal_input' => $this->request->getPost('tanggal_input'),
-            'keterangan' => $this->request->getPost('keterangan')
+            'keterangan' => $keterangan,
+            'jilid' => $jilid,
+            'murojaah' => $murojaah
         ]);
 
         return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Data hafalan berhasil ditambahkan');
@@ -197,6 +224,18 @@ class GuruController extends BaseController
             'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray()
         ]);
+    }
+
+    public function hafalan_($id)
+    {
+        return $this->response->setJSON($this->db->table('hafalan')->where('id_siswa', $id)->get()->getResultArray());
+    }
+
+    public function hafalan_delete($id)
+    {
+        $this->db->table('hafalan')->where('id_hafalan', $id)->delete();
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Data hafalan berhasil dihapus');
     }
 
     public function absen($id)
@@ -306,6 +345,17 @@ class GuruController extends BaseController
             'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray()
         ]);
+    }
+
+    public function absensi_($id)
+    {
+        return $this->response->setJSON($this->db->table('absensi')->where('id_siswa', $id)->get()->getResultArray());
+    }
+
+    public function absensi_delete($id)
+    {
+        $this->db->table('absensi')->where('id_absensi', $id)->delete();
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Absensi siswa berhasil di hapus');
     }
 
     public function alquran()

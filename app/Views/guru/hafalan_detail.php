@@ -111,9 +111,9 @@
     doc.rect(30, 25 + 18, 80, 20);
 
     doc.setFontSize(8)
-    doc.text("Nama Siswa : <?= $dataSiswa['nama_siswa']; ?>", 32, 33 + 18)
-    doc.text("NIS      : <?= $dataSiswa['nisn']; ?>", 32, 36 + 18)
-    doc.text("Kelas   : <?= $dataSiswa['kelas']; ?>",
+    doc.text("Nama Siswa     : <?= $dataSiswa['nama_siswa']; ?>", 32, 33 + 18)
+    doc.text("NISN                : <?= $dataSiswa['nisn']; ?>", 32, 36 + 18)
+    doc.text("Kelas                : <?= $dataSiswa['kelas']; ?>",
       32, 39 + 18)
 
     doc.autoTable({
