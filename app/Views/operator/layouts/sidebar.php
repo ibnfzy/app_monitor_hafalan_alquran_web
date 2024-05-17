@@ -26,6 +26,10 @@
           <div class="sb-nav-link-icon"><i class="fa-regular fa-newspaper text-white"></i></div>
           Kegiatan
         </a>
+        <a href="/OperatorPanel/Corousel" class="nav-link text-white">
+          <div class="sb-nav-link-icon"><i class="fa-solid fa-panorama text-white"></i></div>
+          Slider Gambar
+        </a>
       </div>
     </div>
     <div class="sb-sidenav-footer">

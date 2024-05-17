@@ -496,4 +496,101 @@ class OperatorController extends BaseController
 
         return redirect()->to(base_url('OperatorPanel/Kegiatan'))->with('type-status', 'success')->with('message', 'Data berhasil diupdate');
     }
+
+    public function corousel()
+    {
+        return view('operator/corousel', [
+            'data' => $this->db->table('corousel')->get()->getResultArray()
+        ]);
+    }
+
+    public function corousel_insert()
+    {
+        $rules = [
+            'gambar' => [
+                'rules' => 'uploaded[gambar]|max_size[gambar,1024]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'Gambar tidak boleh kosong',
+                    'max_size' => 'Ukuran gambar terlalu besar',
+                    'is_image' => 'Yang anda pilih bukan gambar',
+                    'mime_in' => 'Yang anda pilih bukan gambar'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $file = $this->request->getFile('gambar');
+
+        $fileName = $file->getRandomName();
+
+        if (!$file->hasMoved()) {
+            $file->move('uploads', $fileName);
+        }
+
+        $this->db->table('corousel')->insert([
+            'gambar' => $fileName
+        ]);
+
+        return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil ditambahkan');
+    }
+
+    public function corousel_delete($id)
+    {
+        $getData = $this->db->table('corousel')->where('id_corousel', $id)->get()->getRowArray();
+
+        $pathFile = realpath('uploads/' . $getData['gambar']);
+
+        if (is_writable($pathFile)) {
+            unlink($pathFile);
+        }
+
+        $this->db->table('corousel')->where('id_corousel', $id)->delete();
+
+        return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil dihapus');
+    }
+
+    public function corousel_update()
+    {
+        $file = $this->request->getFile('gambar');
+
+        $rules = [
+            'id_corousel' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'ID corousel tidak boleh kosong'
+                ]
+            ],
+            'gambar' => [
+                'rules' => 'max_size[gambar,1024]|is_image[gambar]|mime_in[gambar,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'max_size' => 'Ukuran gambar terlalu besar',
+                    'is_image' => 'Yang anda pilih bukan gambar',
+                    'mime_in' => 'Yang anda pilih bukan gambar'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        if ($file->isValid()) {
+            $fileName = $file->getRandomName();
+
+            if (!$file->hasMoved()) {
+                $file->move('uploads', $fileName);
+            }
+
+            $this->db->table('corousel')->where('id_corousel', $this->request->getPost('id_corousel'))->update([
+                'gambar' => $fileName,
+            ]);
+        }
+
+        return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'success')->with('message', 'Data berhasil diupdate');
+    }
 }

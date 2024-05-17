@@ -76,6 +76,11 @@ $routes->group('OperatorPanel', function (RouteCollection $routes) {
   $routes->post('Kegiatan', 'OperatorController::kegiatan_insert');
   $routes->post('Kegiatan/Update', 'OperatorController::kegiatan_update');
   $routes->get('Kegiatan/(:num)', 'OperatorController::kegiatan_delete/$1');
+
+  $routes->get('Corousel', 'OperatorController::corousel');
+  $routes->post('Corousel', 'OperatorController::corousel_insert');
+  $routes->post('Corousel/Update', 'OperatorController::corousel_update');
+  $routes->get('Corousel/(:num)', 'OperatorController::corousel_delete/$1');
 });
 
 $routes->group('API', function (RouteCollection $routes) {

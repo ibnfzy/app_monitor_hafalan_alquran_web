@@ -21,6 +21,14 @@
     href='https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css'
     integrity='sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw=='
     crossorigin='anonymous' />
+
+  <style>
+  .owl-carousel .owl-stage {
+    display: flex !important;
+    align-items: center !important;
+    text-align: -webkit-center;
+  }
+  </style>
 </head>
 
 <body>
@@ -55,7 +63,7 @@
 
   $('.owl-carousel').owlCarousel({
     loop: true,
-    margin: 10,
+    margin: 2,
     responsive: {
       0: {
         items: 1,
@@ -64,7 +72,7 @@
     autoplay: true,
     autoplayTimeout: 6000,
     autoplayHoverPause: true,
-    dots: false
+    dots: false,
   })
   </script>
 </body>

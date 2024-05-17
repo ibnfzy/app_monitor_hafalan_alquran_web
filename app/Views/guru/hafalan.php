@@ -5,7 +5,7 @@
 <?php $db = db_connect(); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4 text-white text-bg-success"><?= $dataKelas['nama_kelas']; ?> | HAFALAN</h1>
+  <h1 class="mt-4 text-white text-bg-success">Kelas <?= $dataKelas['nama_kelas']; ?> | HAFALAN</h1>
   <ol class="breadcrumb mb-4">
 
   </ol>
@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>NIS</th>
+            <th>NISN</th>
             <th>Nama Siswa</th>
             <th>Hafalan Lulus</th>
             <th>Hafalan Belum Lulus</th>
@@ -25,21 +25,22 @@
         <tbody>
 
           <?php foreach ($data as $key => $item) : ?>
-            <tr>
-              <td><?= $key + 1; ?></td>
-              <td><?= $item['nisn'] ?></td>
-              <td><?= $item['nama_siswa'] ?></td>
-              <td>
-                <?= $db->table('hafalan')->where('id_siswa', $item['id_siswa'])->where('keterangan', 'lulus')->countAllResults(); ?>
-              </td>
-              <td>
-                <?= $db->table('hafalan')->where('id_siswa', $item['id_siswa'])->where('keterangan', 'belum_lulus')->countAllResults(); ?>
-              </td>
-              <td>
-                <a href="/GuruPanel/Detail/<?= $item['id_siswa'] ?>" class="btn btn-primary" target="_blank">Detail</a>
-                <button onclick="tambah_hafalan('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>')" class="btn btn-success">Tambah Hafalan</button>
-              </td>
-            </tr>
+          <tr>
+            <td><?= $key + 1; ?></td>
+            <td><?= $item['nisn'] ?></td>
+            <td><?= $item['nama_siswa'] ?></td>
+            <td>
+              <?= $db->table('hafalan')->where('id_siswa', $item['id_siswa'])->where('keterangan', 'lulus')->countAllResults(); ?>
+            </td>
+            <td>
+              <?= $db->table('hafalan')->where('id_siswa', $item['id_siswa'])->where('keterangan', 'belum_lulus')->countAllResults(); ?>
+            </td>
+            <td>
+              <a href="/GuruPanel/Detail/<?= $item['id_siswa'] ?>" class="btn btn-primary" target="_blank">Detail</a>
+              <button onclick="tambah_hafalan('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>')"
+                class="btn btn-success">Tambah Hafalan</button>
+            </td>
+          </tr>
           <?php endforeach ?>
 
         </tbody>
@@ -79,7 +80,8 @@
 
           <div class="mb-3">
             <label for="tanggal" class="form-label">Tanggal</label>
-            <input type="date" class="form-control" id="tanggal_input" name="tanggal_input" value="<?= date('Y-m-d'); ?>">
+            <input type="date" class="form-control" id="tanggal_input" name="tanggal_input"
+              value="<?= date('Y-m-d'); ?>">
           </div>
 
           <div class="mb-3">
@@ -104,11 +106,11 @@
 <?= $this->section('script'); ?>
 
 <script>
-  const tambah_hafalan = (id_siswa, nisn) => {
-    $('#id_siswa').val(id_siswa)
-    $('#nisn_siswa').val(nisn)
-    $('#tambah_hafalan').modal('show')
-  }
+const tambah_hafalan = (id_siswa, nisn) => {
+  $('#id_siswa').val(id_siswa)
+  $('#nisn_siswa').val(nisn)
+  $('#tambah_hafalan').modal('show')
+}
 </script>
 
 <?= $this->endSection(); ?>

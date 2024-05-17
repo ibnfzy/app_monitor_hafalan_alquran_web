@@ -3,11 +3,10 @@
 <?= $this->section('content'); ?>
 <!-- CODE HERE -->
 <div class="owl-carousel owl-theme container-fluid">
+  <?php foreach ($data as $item) : ?>
   <div class="item">
-    <img src="/images/slide-1.jpg" alt="" srcset="">
+    <img src="/uploads/<?= $item['gambar'] ?>" class="" style="width: 90%;" alt="" srcset="">
   </div>
-  <div class="item">
-    <img src="/images/slide-2.jpg" alt="" srcset="">
-  </div>
+  <?php endforeach ?>
 </div>
 <?= $this->endSection(); ?>

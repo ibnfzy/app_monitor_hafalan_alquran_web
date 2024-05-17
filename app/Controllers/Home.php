@@ -13,7 +13,9 @@ class Home extends BaseController
 
     public function index(): string
     {
-        return view('web/home');
+        return view('web/home', [
+            'data' => $this->db->table('corousel')->get()->getResultArray()
+        ]);
     }
 
     public function notonline()
