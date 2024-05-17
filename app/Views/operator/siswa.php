@@ -16,6 +16,7 @@
             <th>NISN</th>
             <th>Nama Siswa</th>
             <th>Kelas</th>
+            <th>Halaqoh</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -26,9 +27,10 @@
             <td><?= $item['nisn'] ?></td>
             <td><?= $item['nama_siswa'] ?></td>
             <td><?= $item['kelas'] ?></td>
+            <td><?= $item['halaqoh'] ?></td>
             <td>
               <button
-                onclick="edit(<?= $item['id_siswa'] ?>, '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>')"
+                onclick="edit(<?= $item['id_siswa'] ?>, '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['halaqoh'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Siswa/Delete/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
             </td>
@@ -68,6 +70,18 @@
               <?php if (count($kelas) == 0) : ?>
               <option value="" disabled selected>Belum ada kelas</option>
               <?php endif ?>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="halaqoh">Halaqoh</label>
+            <select class="form-select" id="halaqoh" name="halaqoh">
+              <option value="Abu bakar Ash-Shiddiq">Abu bakar Ash-Shiddiq</option>
+              <option value="Ali bin Abi Thalib">Ali bin Abi Thalib</option>
+              <option value="Umar bin Khattab">Umar bin Khattab</option>
+              <option value="Utsman bin Affan">Utsman bin Affan</option>
+              <option value="Mus'ab bin Umair">Mus'ab bin Umair</option>
+              <option value="Zaid bin Tsabit 1">Zaid bin Tsabit 1</option>
+              <option value="Zaid bin Tsabit 2">Zaid bin Tsabit 2</option>
             </select>
           </div>
         </div>
@@ -111,6 +125,18 @@
               <?php endif ?>
             </select>
           </div>
+          <div class="mb-3">
+            <label for="halaqoh">Halaqoh</label>
+            <select class="form-select" id="halaqoh-edit" name="halaqoh">
+              <option value="Abu bakar Ash-Shiddiq">Abu bakar Ash-Shiddiq</option>
+              <option value="Ali bin Abi Thalib">Ali bin Abi Thalib</option>
+              <option value="Umar bin Khattab">Umar bin Khattab</option>
+              <option value="Utsman bin Affan">Utsman bin Affan</option>
+              <option value="Mus'ab bin Umair">Mus'ab bin Umair</option>
+              <option value="Zaid bin Tsabit 1">Zaid bin Tsabit 1</option>
+              <option value="Zaid bin Tsabit 2">Zaid bin Tsabit 2</option>
+            </select>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -126,12 +152,17 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nisn, nama_siswa, id_kelas) => {
+const edit = (id, nisn, nama_siswa, id_kelas, halaqoh) => {
   $('#id_siswa-edit').val(id)
   $('#nama_siswa-edit').val(nama_siswa)
   $('#nisn-edit').val(nisn)
   $('#id_kelas-edit option').each(function() {
     if ($(this).val() == id_kelas) {
+      $(this).attr('selected', '');
+    }
+  });
+  $('#halaqoh-edit option').each(function() {
+    if ($(this).val() == halaqoh) {
       $(this).attr('selected', '');
     }
   });

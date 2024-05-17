@@ -28,6 +28,10 @@ class Siswa extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255
             ],
+            'halaqoh' => [
+                'type' => 'VARCHAR',
+                'constraint' => 150
+            ],
         ]);
 
         $this->forge->addKey('id_siswa', true);
