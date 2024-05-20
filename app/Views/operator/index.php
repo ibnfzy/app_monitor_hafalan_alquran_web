@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Table Guru</h1>
+  <h1 class="mt-4">Tabel Guru</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -20,16 +20,15 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td><?= $item['nip'] ?></td>
-            <td><?= $item['nama_guru'] ?></td>
-            <td>
-              <button onclick="edit(<?= $item['id_guru'] ?>, '<?= $item['nip'] ?>', '<?= $item['nama_guru'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Delete/<?= $item['id_guru'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td><?= $item['nip'] ?></td>
+              <td><?= $item['nama_guru'] ?></td>
+              <td>
+                <button onclick="edit(<?= $item['id_guru'] ?>, '<?= $item['nip'] ?>', '<?= $item['nama_guru'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Delete/<?= $item['id_guru'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -73,7 +72,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="/OperatorPanel/Update" method="post" enctype="multipart/form-data">
@@ -106,12 +105,12 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nip, nama_guru) => {
-  $('#id_guru-edit').val(id)
-  $('#nip-edit').val(nip)
-  $('#nama_guru-edit').val(nama_guru)
-  $('#edit').modal('show')
-}
+  const edit = (id, nip, nama_guru) => {
+    $('#id_guru-edit').val(id)
+    $('#nip-edit').val(nip)
+    $('#nama_guru-edit').val(nama_guru)
+    $('#edit').modal('show')
+  }
 </script>
 
 <?= $this->endSection(); ?>

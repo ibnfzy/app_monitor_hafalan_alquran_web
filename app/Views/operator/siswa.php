@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Table Siswa</h1>
+  <h1 class="mt-4">Tabel Siswa</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -17,6 +17,7 @@
             <th>Nama Siswa</th>
             <th>Kelas</th>
             <th>Halaqoh</th>
+            <th>Nama Orang Tua</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -28,9 +29,10 @@
             <td><?= $item['nama_siswa'] ?></td>
             <td><?= $item['kelas'] ?></td>
             <td><?= $item['halaqoh'] ?></td>
+            <td><?= $item['nama_orang_tua'] ?></td>
             <td>
               <button
-                onclick="edit(<?= $item['id_siswa'] ?>, '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['halaqoh'] ?>')"
+                onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Siswa/Delete/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
             </td>
@@ -54,15 +56,15 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="nama_siswa" class="form-label">Nama Siswa</label>
-            <input type="text" class="form-control" id="nama_siswa" name="nama_siswa">
+            <input type="text" class="form-control" id="nama_siswa" name="nama_siswa" required>
           </div>
           <div class="mb-3">
             <label for="nisn" class="form-label">NISN</label>
-            <input type="text" class="form-control" id="nisn" name="nisn">
+            <input type="text" class="form-control" id="nisn" name="nisn" required>
           </div>
           <div class="mb-3">
             <label for="id_kelas">KELAS</label>
-            <select class="form-select" id="id_kelas" name="id_kelas">
+            <select class="form-select" id="id_kelas" name="id_kelas" required>
               <?php foreach ($kelas as $item) : ?>
               <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?></option>
               <?php endforeach ?>
@@ -74,7 +76,7 @@
           </div>
           <div class="mb-3">
             <label for="halaqoh">Halaqoh</label>
-            <select class="form-select" id="halaqoh" name="halaqoh">
+            <select class="form-select" id="halaqoh" name="halaqoh" required>
               <option value="Abu bakar Ash-Shiddiq">Abu bakar Ash-Shiddiq</option>
               <option value="Ali bin Abi Thalib">Ali bin Abi Thalib</option>
               <option value="Umar bin Khattab">Umar bin Khattab</option>
@@ -83,6 +85,20 @@
               <option value="Zaid bin Tsabit 1">Zaid bin Tsabit 1</option>
               <option value="Zaid bin Tsabit 2">Zaid bin Tsabit 2</option>
             </select>
+          </div>
+          <hr>
+          <div class="mb-3">
+            <label for="nama_orang_tua">Nama Orang Tua</label>
+            <input type="text" class="form-control" id="nama_orang_tua" name="nama_orang_tua" required>
+          </div>
+          <div class="mb-3">
+            <label for="pasword">Password </label>
+            <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
+          </div>
+          <div class="mb-3">
+            <label for="konfirmasi_password">Konfirmasi Password</label>
+            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password"
+              placeholder="Konfirmasi Password" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -98,7 +114,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="/OperatorPanel/Siswa/Update" method="post" enctype="multipart/form-data">
@@ -137,6 +153,20 @@
               <option value="Zaid bin Tsabit 2">Zaid bin Tsabit 2</option>
             </select>
           </div>
+          <hr>
+          <div class="mb-3">
+            <label for="nama_orang_tua">Nama Orang Tua</label>
+            <input type="text" class="form-control" id="nama_orang_tua-edit" name="nama_orang_tua" required>
+          </div>
+          <div class="mb-3">
+            <label for="pasword">Password <span class="text-danger">*Kosongkan jika tidak ingin diganti</span></label>
+            <input class="form-control" type="password" name="password" placeholder="Password Baru" id="password-edit">
+          </div>
+          <div class="mb-3">
+            <label for="konfirmasi_password">Konfirmasi Password</label>
+            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password-edit"
+              placeholder="Konfirmasi Password Baru">
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -152,7 +182,7 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nisn, nama_siswa, id_kelas, halaqoh) => {
+const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua) => {
   $('#id_siswa-edit').val(id)
   $('#nama_siswa-edit').val(nama_siswa)
   $('#nisn-edit').val(nisn)
@@ -166,6 +196,7 @@ const edit = (id, nisn, nama_siswa, id_kelas, halaqoh) => {
       $(this).attr('selected', '');
     }
   });
+  $('#nama_orang_tua-edit').val(nama_orang_tua)
   $('#edit').modal('show')
 }
 </script>

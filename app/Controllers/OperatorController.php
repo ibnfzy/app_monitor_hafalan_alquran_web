@@ -186,7 +186,7 @@ class OperatorController extends BaseController
     public function siswa()
     {
         return view('operator/siswa', [
-            'data' => $this->db->table('siswa')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
+            'data' => $this->db->table('siswa')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
             'kelas' => $this->db->table('kelas')->orderBy('id_kelas', 'DESC')->get()->getResultArray()
         ]);
     }
@@ -212,6 +212,26 @@ class OperatorController extends BaseController
                 'errors' => [
                     'required' => 'Kelas tidak boleh kosong'
                 ]
+            ],
+            'nama_orang_tua' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Nama Orang tua tidak boleh kosong',
+                    'max_length' => 'Nama Orang tua tidak boleh lebih dari 250 karakter'
+                ]
+            ],
+            'password' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Password tidak boleh kosong'
+                ]
+            ],
+            'password_confirm' => [
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password tidak boleh kosong',
+                    'matches' => 'Konfirmasi password tidak sama dengan password'
+                ]
             ]
         ];
 
@@ -225,7 +245,14 @@ class OperatorController extends BaseController
             'nisn' => $this->request->getPost('nisn'),
             'nama_siswa' => $this->request->getPost('nama_siswa'),
             'id_kelas' => $this->request->getPost('id_kelas'),
-            'nama_kelas' => $getKelas['nama_kelas'],
+            'halaqoh' => $this->request->getPost('halaqoh'),
+            'kelas' => $getKelas['nama_kelas']
+        ]);
+
+        $this->db->table('orang_tua')->insert([
+            'nisn_anak' => $this->request->getPost('nisn'),
+            'nama_orang_tua' => $this->request->getPost('nama_orang_tua'),
+            'password' => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT)
         ]);
 
         return redirect()->to(base_url('OperatorPanel/Siswa'))->with('type-status', 'success')
@@ -259,8 +286,32 @@ class OperatorController extends BaseController
                 'errors' => [
                     'required' => 'Kelas tidak boleh kosong'
                 ]
-            ]
+            ],
+            'nama_orang_tua' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Nama Orang tua tidak boleh kosong',
+                    'max_length' => 'Nama Orang tua tidak boleh lebih dari 250 karakter'
+                ]
+            ],
         ];
+
+        if ($this->request->getPost('password') != '') {
+            $rules['password'] = [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Password tidak boleh kosong'
+                ]
+            ];
+
+            $rules['password_confirm'] = [
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password tidak boleh kosong',
+                    'matches' => 'Konfirmasi password tidak sama dengan password'
+                ]
+            ];
+        }
 
         if (!$this->validate($rules)) {
             return redirect()->to(base_url('OperatorPanel/Siswa'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
@@ -272,8 +323,20 @@ class OperatorController extends BaseController
             'nisn' => $this->request->getPost('nisn'),
             'nama_siswa' => $this->request->getPost('nama_siswa'),
             'id_kelas' => $this->request->getPost('id_kelas'),
-            'nama_kelas' => $getKelas['nama_kelas'],
+            'halaqoh' => $this->request->getPost('halaqoh'),
+            'kelas' => $getKelas['nama_kelas']
         ]);
+
+        $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([
+            'nisn_anak' => $this->request->getPost('nisn'),
+            'nama_orang_tua' => $this->request->getPost('nama_orang_tua'),
+        ]);
+
+        if ($this->request->getPost('password') != '') {
+            $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([
+                'password' => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT)
+            ]);
+        }
 
         return redirect()->to(base_url('OperatorPanel/Siswa'))->with('type-status', 'success')
             ->with('message', 'Data berhasil diupdate');

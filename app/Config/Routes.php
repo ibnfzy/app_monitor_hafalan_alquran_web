@@ -94,4 +94,5 @@ $routes->group('API', function (RouteCollection $routes) {
   $routes->get('InformasiGuru/(:num)', 'API::informasi_guru/$1');
   $routes->get('Hafalan/(:num)', 'API::hafalan/$1');
   $routes->get('PDF/(:num)', 'API::webview_blobpdf/$1');
+  $routes->get('RekapNilai/(:num)', 'API::rekap_nilai/$1');
 });

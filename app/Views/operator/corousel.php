@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Table Corousel</h1>
+  <h1 class="mt-4">Tabel Slider Gambar</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -19,16 +19,15 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td class="col-4"><img src="/uploads/<?= $item['gambar'] ?>" alt="" class="image-fluid w-50">
-            </td>
-            <td>
-              <button onclick="edit(<?= $item['id_corousel'] ?>, '<?= $item['gambar'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Corousel/<?= $item['id_corousel'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td class="col-4"><img src="/uploads/<?= $item['gambar'] ?>" alt="" class="image-fluid w-50">
+              </td>
+              <td>
+                <button onclick="edit(<?= $item['id_corousel'] ?>, '<?= $item['gambar'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Corousel/<?= $item['id_corousel'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -92,12 +91,12 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, gambar) => {
-  $('#id_corousel-edit').val(id)
-  $('#image-edit').attr('src', '/uploads/' +
-    gambar)
-  $('#edit').modal('show')
-}
+  const edit = (id, gambar) => {
+    $('#id_corousel-edit').val(id)
+    $('#image-edit').attr('src', '/uploads/' +
+      gambar)
+    $('#edit').modal('show')
+  }
 </script>
 
 <?= $this->endSection(); ?>

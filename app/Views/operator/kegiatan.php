@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Table Kegiatan</h1>
+  <h1 class="mt-4">Tabel Kegiatan</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -20,19 +20,16 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td class="col-4"><?= $item['judul'] ?> <img src="/uploads/<?= $item['gambar'] ?>" alt=""
-                class="image-fluid w-50 d-block">
-            </td>
-            <td class="col-4"><?= $item['deskripsi'] ?></td>
-            <td>
-              <button
-                onclick="edit(<?= $item['id_kegiatan'] ?>, '<?= $item['judul'] ?>', '<?= $item['deskripsi'] ?>', '<?= $item['gambar'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Kegiatan/<?= $item['id_kegiatan'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td class="col-4"><?= $item['judul'] ?> <img src="/uploads/<?= $item['gambar'] ?>" alt="" class="image-fluid w-50 d-block">
+              </td>
+              <td class="col-4"><?= $item['deskripsi'] ?></td>
+              <td>
+                <button onclick="edit(<?= $item['id_kegiatan'] ?>, '<?= $item['judul'] ?>', '<?= $item['deskripsi'] ?>', '<?= $item['gambar'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Kegiatan/<?= $item['id_kegiatan'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -116,14 +113,14 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, judul, deskripsi, gambar) => {
-  $('#id_kegiatan-edit').val(id)
-  $('#judul-edit').val(judul)
-  $('#deskripsi-edit').val(deskripsi)
-  $('#image-edit').attr('src', '/uploads/' +
-    gambar)
-  $('#edit').modal('show')
-}
+  const edit = (id, judul, deskripsi, gambar) => {
+    $('#id_kegiatan-edit').val(id)
+    $('#judul-edit').val(judul)
+    $('#deskripsi-edit').val(deskripsi)
+    $('#image-edit').attr('src', '/uploads/' +
+      gambar)
+    $('#edit').modal('show')
+  }
 </script>
 
 <?= $this->endSection(); ?>

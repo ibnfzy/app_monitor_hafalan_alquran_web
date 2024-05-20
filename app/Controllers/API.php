@@ -97,4 +97,16 @@ class API extends BaseController
 
         echo "<iframe style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none;' src='/uploads/" . $data['blob_pdf'] . "'></iframe>";
     }
+
+    public function rekap_nilai($nisn)
+    {
+        $getSiswa = $this->db->table('siswa')->where('nisn', $nisn)->get()->getRowArray();
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Success',
+            'data' => [
+                'rekap_nilai' => $this->db->table('rekap_nilai')->where('id_siswa', $getSiswa['id_siswa'])->orderBy('id_rekap_nilai', 'DESC')->get()->getResultArray()
+            ]
+        ]);
+    }
 }

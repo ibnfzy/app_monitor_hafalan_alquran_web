@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Table Kelas</h1>
+  <h1 class="mt-4">Tabel Kelas</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -80,7 +80,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="/OperatorPanel/Kelas/Update" method="post" enctype="multipart/form-data">
