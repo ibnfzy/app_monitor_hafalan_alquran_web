@@ -62,7 +62,7 @@ class GuruController extends BaseController
             'kontak' => $this->request->getPost('kontak')
         ]);
 
-        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('dataMessage', 'Data berhasil diubah');
+        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('message', 'Data berhasil diubah');
     }
 
     public function edit_password()
@@ -84,7 +84,7 @@ class GuruController extends BaseController
             'password' => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT)
         ]);
 
-        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('dataMessage', 'Password berhasil diubah');
+        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('message', 'Password berhasil diubah');
     }
 
     public function edit_foto()
@@ -109,13 +109,13 @@ class GuruController extends BaseController
 
         $fileName = $file->getRandomName();
 
-        $file->move(WRITEPATH . 'uploads', $fileName);
+        $file->move('uploads', $fileName);
 
         $this->db->table('guru')->where('id_guru', session()->get('id_guru'))->update([
-            'foto' => $fileName
+            'gambar' => $fileName
         ]);
 
-        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('dataMessage', 'Foto profil berhasil diubah');
+        return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('message', 'Foto profil berhasil diubah');
     }
 
     public function hafalan($id)

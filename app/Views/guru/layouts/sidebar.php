@@ -16,7 +16,8 @@
           <div class="sb-nav-link-icon text-white"><i class="fas fa-chart-area"></i></div>
           Grafik
         </a>
-        <a class="nav-link collapsed text-white" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+        <a class="nav-link collapsed text-white" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+          aria-expanded="false" aria-controls="collapseLayouts">
           <div class="sb-nav-link-icon text-white"><i class="fas fa-columns"></i></div>
           Rekap Nilai
           <div class="sb-sidenav-collapse-arrow text-white"><i class="fas fa-angle-down"></i></div>
@@ -65,7 +66,8 @@ $getSiswa = $db->table('siswa')->whereIn('id_kelas', $arrayIdKelas)->get()->getR
                 <label for="siswa" class="form-label">Pilih Siswa</label>
                 <select class="select2-siswa form-control col-12" style="width: 100%;" name="id_siswa" required>
                   <?php foreach ($getSiswa as $item) : ?>
-                    <option value="<?= $item['id_siswa'] ?>"><?= $item['nama_siswa']; ?></option>
+                  <option value="<?= $item['id_siswa'] ?>"><?= $item['nama_siswa'] . ' : NISN ' . $item['nisn']; ?>
+                  </option>
                   <?php endforeach ?>
                 </select>
               </div>
@@ -117,7 +119,8 @@ $getSiswa = $db->table('siswa')->whereIn('id_kelas', $arrayIdKelas)->get()->getR
             <div class="col">
               <div class="mb-3">
                 <label for="keterangan" class="form-label">Keterangan Tambahan</label>
-                <textarea name="keterangan" id="keterangan" class="form-control" cols="30" rows="10" required></textarea>
+                <textarea name="keterangan" id="keterangan" class="form-control" cols="30" rows="10"
+                  required></textarea>
               </div>
               <div class="mb-3">
                 <label for="nilai_uts" class="form-label">Nilai UTS</label>

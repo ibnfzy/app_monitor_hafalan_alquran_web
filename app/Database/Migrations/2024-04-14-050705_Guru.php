@@ -36,6 +36,10 @@ class Guru extends Migration
                 'type' => 'VARCHAR',
                 'default' => 'users.png',
                 'constraint' => 255
+            ],
+            'halaqoh' => [
+                'type' => 'VARCHAR',
+                'constraint' => 150
             ]
         ]);
 

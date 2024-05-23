@@ -344,7 +344,12 @@ class OperatorController extends BaseController
 
     public function siswa_delete($id)
     {
+        $getSiswa = $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray();
+
         $this->db->table('siswa')->where('id_siswa', $id)->delete();
+
+        $this->db->table('orang_tua')->where('nisn_anak', $getSiswa['nisn'])->delete();
+
         return redirect()->to(base_url('OperatorPanel/Siswa'))->with('type-status', 'success')
             ->with('message', 'Data berhasil dihapus');
     }

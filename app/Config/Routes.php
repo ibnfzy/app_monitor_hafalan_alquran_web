@@ -21,6 +21,9 @@ $routes->group('Login', function (RouteCollection $routes) {
 });
 
 $routes->group('GuruPanel', function (RouteCollection $routes) {
+  $routes->post('Foto', 'GuruController::edit_foto');
+  $routes->post('Password', 'GuruController::edit_password');
+  $routes->post('Guru', 'GuruController::edit_biodata');
   $routes->get('/', 'GuruController::index');
   $routes->get('(:num)', 'GuruController::hafalan/$1');
   $routes->get('HafalanPDF/(:num)', 'GuruController::hafalan_detail/$1');
@@ -56,8 +59,8 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
 $routes->group('OperatorPanel', function (RouteCollection $routes) {
   $routes->get('/', 'OperatorController::index');
   $routes->post('/', 'OperatorController::guru_insert');
-  $routes->post('/Update', 'OperatorController::guru_update');
-  $routes->get('/Delete/(:num)', 'OperatorController::guru_delete/$1');
+  $routes->post('Update', 'OperatorController::guru_update');
+  $routes->get('Delete/(:num)', 'OperatorController::guru_delete/$1');
 
   $routes->get('Kelas', 'OperatorController::kelas');
   $routes->post('Kelas', 'OperatorController::kelas_insert');

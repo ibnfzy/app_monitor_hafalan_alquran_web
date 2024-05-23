@@ -4,13 +4,14 @@
 
 <?php
 $db = db_connect();
-$jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
 ?>
 
 <div class="container-fluid px-4">
   <h1 class="mt-4 text-white">Panel Guru</h1>
   <ol class="breadcrumb mb-4 btn-group col-4">
-    <button class="btn btn-primary shadow-lg" onclick="">Edit Biodata</button>
+    <button class="btn btn-primary shadow-lg"
+      onclick="editBiodata('<?= $dataGuru['gambar'] ?>', '<?= $dataGuru['nip']; ?>', '<?= $dataGuru['kontak']; ?>')">Edit
+      Biodata</button>
     <button class="btn btn-primary shadow-lg" data-bs-toggle="modal" data-bs-target="#photo">Ubah Foto</button>
     <button class="btn btn-primary shadow-lg" data-bs-toggle="modal" data-bs-target="#password">Ubah Pasword</button>
   </ol>
@@ -20,11 +21,11 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
         <div class="card card-primary card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/users.png"
+              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/<?= $dataGuru['gambar'] ?>"
                 alt="User profile picture">
             </div>
 
-            <h3 class="profile-username text-center"><?= $jenisKelamin . session()->get('nama_guru'); ?></h3>
+            <h3 class="profile-username text-center"><?= $dataGuru['nama_guru']; ?></h3>
 
             <p class="text-muted text-center">Guru</p>
 
@@ -113,7 +114,7 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
         <div class="modal-body">
           <div class="mb-3">
             <label for="nama_guru" class="form-label">Foto Baru</label>
-            <input type="file" class="form-control" id="gambar" name="gambar" accept="image/jpg, image/jpeg, image/png">
+            <input type="file" class="form-control" id="gambar" name="foto" accept="image/jpg, image/jpeg, image/png">
           </div>
         </div>
         <div class="modal-footer">
@@ -152,7 +153,7 @@ $jenisKelamin = ($dataGuru['jenis_kelamin'] == 'Perempuan') ? 'Ibu ' : 'Bapak ';
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="/GuruPanel/Guru" method="post">

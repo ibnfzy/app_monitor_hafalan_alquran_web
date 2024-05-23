@@ -15,6 +15,7 @@
             <th>#</th>
             <th>NISN</th>
             <th>Nama Siswa</th>
+            <th>Guru</th>
             <th>Kelas</th>
             <th>Halaqoh</th>
             <th>Nama Orang Tua</th>
@@ -23,20 +24,19 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td><?= $item['nisn'] ?></td>
-            <td><?= $item['nama_siswa'] ?></td>
-            <td><?= $item['kelas'] ?></td>
-            <td><?= $item['halaqoh'] ?></td>
-            <td><?= $item['nama_orang_tua'] ?></td>
-            <td>
-              <button
-                onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Siswa/Delete/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td><?= $item['nisn'] ?></td>
+              <td><?= $item['nama_siswa'] ?></td>
+              <td></td>
+              <td><?= $item['kelas'] ?></td>
+              <td><?= $item['halaqoh'] ?></td>
+              <td><?= $item['nama_orang_tua'] ?></td>
+              <td>
+                <button onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Siswa/Delete/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -66,11 +66,11 @@
             <label for="id_kelas">KELAS</label>
             <select class="form-select" id="id_kelas" name="id_kelas" required>
               <?php foreach ($kelas as $item) : ?>
-              <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?></option>
+                <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?></option>
               <?php endforeach ?>
 
               <?php if (count($kelas) == 0) : ?>
-              <option value="" disabled selected>Belum ada kelas</option>
+                <option value="" disabled selected>Belum ada kelas</option>
               <?php endif ?>
             </select>
           </div>
@@ -97,8 +97,7 @@
           </div>
           <div class="mb-3">
             <label for="konfirmasi_password">Konfirmasi Password</label>
-            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password"
-              placeholder="Konfirmasi Password" required>
+            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password" placeholder="Konfirmasi Password" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -132,12 +131,12 @@
             <label for="id_kelas">KELAS</label>
             <select class="form-select" id="id_kelas-edit" name="id_kelas">
               <?php foreach ($kelas as $item) : ?>
-              <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?>
-              </option>
+                <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?>
+                </option>
               <?php endforeach ?>
 
               <?php if (count($kelas) == 0) : ?>
-              <option value="" disabled selected>Belum ada kelas</option>
+                <option value="" disabled selected>Belum ada kelas</option>
               <?php endif ?>
             </select>
           </div>
@@ -164,8 +163,7 @@
           </div>
           <div class="mb-3">
             <label for="konfirmasi_password">Konfirmasi Password</label>
-            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password-edit"
-              placeholder="Konfirmasi Password Baru">
+            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password-edit" placeholder="Konfirmasi Password Baru">
           </div>
         </div>
         <div class="modal-footer">
@@ -182,23 +180,23 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua) => {
-  $('#id_siswa-edit').val(id)
-  $('#nama_siswa-edit').val(nama_siswa)
-  $('#nisn-edit').val(nisn)
-  $('#id_kelas-edit option').each(function() {
-    if ($(this).val() == id_kelas) {
-      $(this).attr('selected', '');
-    }
-  });
-  $('#halaqoh-edit option').each(function() {
-    if ($(this).val() == halaqoh) {
-      $(this).attr('selected', '');
-    }
-  });
-  $('#nama_orang_tua-edit').val(nama_orang_tua)
-  $('#edit').modal('show')
-}
+  const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua) => {
+    $('#id_siswa-edit').val(id)
+    $('#nama_siswa-edit').val(nama_siswa)
+    $('#nisn-edit').val(nisn)
+    $('#id_kelas-edit option').each(function() {
+      if ($(this).val() == id_kelas) {
+        $(this).attr('selected', '');
+      }
+    });
+    $('#halaqoh-edit option').each(function() {
+      if ($(this).val() == halaqoh) {
+        $(this).attr('selected', '');
+      }
+    });
+    $('#nama_orang_tua-edit').val(nama_orang_tua)
+    $('#edit').modal('show')
+  }
 </script>
 
 <?= $this->endSection(); ?>

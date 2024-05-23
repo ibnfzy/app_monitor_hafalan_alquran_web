@@ -28,6 +28,35 @@
     align-items: center !important;
     text-align: -webkit-center;
   }
+
+  .owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+  }
+
+  .owl-nav .owl-prev,
+  .owl-nav .owl-next {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+  }
+
+  .owl-nav .owl-prev {
+    position: absolute;
+    left: 20px;
+    /* Tambahkan margin kiri */
+  }
+
+  .owl-nav .owl-next {
+    position: absolute;
+    right: 40px;
+    /* Tambahkan margin kanan */
+  }
   </style>
 </head>
 
@@ -73,6 +102,11 @@
     autoplayTimeout: 6000,
     autoplayHoverPause: true,
     dots: false,
+    nav: true,
+    navText: [
+      '<i class="fa-solid fa-circle-chevron-left fa-xl text-success"></i>', // Ikon untuk tombol "prev"
+      '<i class="fa-solid fa-circle-chevron-right fa-xl text-success"></i>' // Ikon untuk tombol "next"
+    ]
   })
   </script>
 </body>
