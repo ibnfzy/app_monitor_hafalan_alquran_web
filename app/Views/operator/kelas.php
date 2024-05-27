@@ -14,7 +14,8 @@
           <tr>
             <th>#</th>
             <th>Nama Kelas</th>
-            <th>Nama Guru</th>
+            <th>Tahun Ajaran</th>
+            <th>Semester</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -23,9 +24,11 @@
           <tr>
             <td><?= $i = $key + 1; ?></td>
             <td><?= $item['nama_kelas'] ?></td>
-            <td><?= $item['nama_guru'] ?></td>
+            <td><?= $item['tahun_ajaran'] ?></td>
+            <td><?= $item['semester'] ?></td>
             <td>
-              <button onclick="edit(<?= $item['id_kelas'] ?>, '<?= $item['nama_kelas'] ?>')"
+              <button
+                onclick="edit(<?= $item['id_kelas'] ?>, '<?= $item['nama_kelas'] ?>', '<?= $item['tahun_ajaran'] ?>', '<?= $item['semester'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Kelas/<?= $item['id_kelas'] ?>" class="btn btn-danger">Delete</a>
             </td>
@@ -48,21 +51,16 @@
       <form action="/OperatorPanel/Kelas" method="post">
         <div class="modal-body">
           <div class="mb-3">
-            <label for="nip" class="form-label">Nama Kelas</label>
+            <label for="nama_kelas" class="form-label">Nama Kelas</label>
             <input type="text" class="form-control" id="nama_kelas" name="nama_kelas">
           </div>
-
           <div class="mb-3">
-            <label for="nip" class="form-label">Pilih Guru</label>
-            <select name="id_guru" id="id_guru" class="form-control">
-              <?php foreach ($guru as $item) : ?>
-              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
-              <?php endforeach ?>
-
-              <?php if (count($guru) == 0) : ?>
-              <option value="" disabled selected>Belum ada guru</option>
-              <?php endif ?>
-            </select>
+            <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+            <input type="text" class="form-control" id="tahun_ajaran" name="tahun_ajaran">
+          </div>
+          <div class="mb-3">
+            <label for="semester" class="form-label">Semester</label>
+            <input type="text" class="form-control" id="semester" name="semester">
           </div>
         </div>
         <div class="modal-footer">
@@ -90,18 +88,13 @@
             <label for="nama_kelas-edit" class="form-label">Nama Kelas</label>
             <input type="text" class="form-control" id="nama_kelas-edit" name="nama_kelas">
           </div>
-
           <div class="mb-3">
-            <label for="nip" class="form-label">Pilih Guru</label>
-            <select name="id_guru" id="id_guru" class="form-control">
-              <?php foreach ($guru as $item) : ?>
-              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
-              <?php endforeach ?>
-
-              <?php if (count($guru) == 0) : ?>
-              <option value="" disabled selected>Belum ada guru</option>
-              <?php endif ?>
-            </select>
+            <label for="tahun_ajaran-edit" class="form-label">Tahun Ajaran</label>
+            <input type="text" class="form-control" id="tahun_ajaran-edit" name="tahun_ajaran">
+          </div>
+          <div class="mb-3">
+            <label for="semester-edit" class="form-label">Semester</label>
+            <input type="text" class="form-control" id="semester-edit" name="semester">
           </div>
         </div>
         <div class="modal-footer">
@@ -118,14 +111,11 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nama_kelas, id_kelas) => {
+const edit = (id, nama_kelas, tahun_ajaran, semester) => {
   $('#id_kelas-edit').val(id)
   $('#nama_kelas-edit').val(nama_kelas)
-  $('#id_guru-edit option').each(function() {
-    if ($(this).val() == id_kelas) {
-      $(this).prop('selected', true)
-    }
-  })
+  $('#tahun_ajaran-edit').val(tahun_ajaran)
+  $('#semester-edit').val(semester)
   $('#edit').modal('show')
 }
 </script>

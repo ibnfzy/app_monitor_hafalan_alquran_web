@@ -24,7 +24,7 @@ class GuruLogin extends BaseController
         $username = $this->request->getPost('username');
         $password = (string)  $this->request->getPost('password');
 
-        $check = $this->db->table('guru')->where('nip', $username)->get()->getRowArray();
+        $check = $this->db->table('guru')->where('id_unique_guru', $username)->get()->getRowArray();
 
         if ($check) {
             $verify = password_verify($password, $check['password']);
@@ -33,7 +33,7 @@ class GuruLogin extends BaseController
                 session()->set([
                     'id_guru' => $check['id_guru'],
                     'nama_guru' => $check['nama_guru'],
-                    'nip' => $check['nip'],
+                    'id_unique_guru' => $check['id_unique_guru'],
                     'guru_logged_in' => true
                 ]);
 
@@ -46,7 +46,7 @@ class GuruLogin extends BaseController
         }
 
         return redirect()->to(base_url('Login/Guru'))->with('type-status', 'error')
-            ->with('message', 'Maaf NIP tidak terdaftar, silahkan hubungi operator!');
+            ->with('message', 'Maaf ID Guru tidak terdaftar, silahkan hubungi operator!');
     }
 
     public function logoff()

@@ -16,9 +16,12 @@ class Siswa extends Migration
             'id_kelas' => [
                 'type' => 'INT'
             ],
+            'id_halaqoh' => [
+                'type' => 'INT'
+            ],
             'kelas' => [
                 'type' => 'VARCHAR',
-                'constraint' => 255
+                'constraint' => 1
             ],
             'nisn' => [
                 'type' => 'VARCHAR',
@@ -28,10 +31,14 @@ class Siswa extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255
             ],
-            'halaqoh' => [
-                'type' => 'VARCHAR',
-                'constraint' => 150
+            'pdf_hafalan' => [
+                'type' => 'TEXT',
+                'null' => true
             ],
+            'pdf_absensi' => [
+                'type' => 'TEXT',
+                'null' => true
+            ]
         ]);
 
         $this->forge->addKey('id_siswa', true);

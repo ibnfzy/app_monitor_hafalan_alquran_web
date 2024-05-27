@@ -10,13 +10,11 @@ class Kelas extends Seeder
     {
         $this->db->table('kelas')->insertBatch([
             [
-                'id_guru' => 1,
                 'nama_kelas' => '1',
                 'semester' => '1',
                 'tahun_ajaran' => '2024/2025',
             ],
             [
-                'id_guru' => 2,
                 'nama_kelas' => '2',
                 'semester' => '1',
                 'tahun_ajaran' => '2024/2025',

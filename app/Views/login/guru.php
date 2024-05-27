@@ -13,8 +13,7 @@
   <link rel="stylesheet" href="<?= base_url(); ?>node_modules/toastr/build/toastr.min.css">
 </head>
 
-<body
-  style="background: url('<?= base_url('bg.jpg') ?>') center center/cover no-repeat fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+<body style="background: url('<?= base_url('bg.jpg') ?>') center center/cover no-repeat fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
   <div id="layoutAuthentication">
     <div id="layoutAuthentication">
       <div id="layoutAuthentication_content">
@@ -30,11 +29,10 @@
                     <form action="/Login/Guru" method="post">
                       <div class="form-floating mb-3">
                         <input class="form-control" id="inputEmail" type="text" name="username" required />
-                        <label for="inputEmail">NIP</label>
+                        <label for="inputEmail">ID Guru</label>
                       </div>
                       <div class="form-floating mb-3">
-                        <input class="form-control" id="inputPassword" type="password" placeholder="Password"
-                          name="password" required />
+                        <input class="form-control" id="inputPassword" type="password" placeholder="Password" name="password" required />
                         <label for="inputPassword">Password</label>
                       </div>
                       <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -59,23 +57,23 @@
     <script src="/panel/js/scripts.js"></script>
 
     <script>
-    toastr.options = {
-      "closeButton": true,
-      "debug": false,
-      "newestOnTop": true,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": true,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "5000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
     </script>
 
     <?php

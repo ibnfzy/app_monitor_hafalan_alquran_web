@@ -43,13 +43,13 @@ class API extends BaseController
             'status' => 200,
             'message' => 'Success',
             'data' => [
-                'siswa' => $this->db->table('siswa')->where('nisn', $nisn)->get()->getRowArray(),
+                'siswa' => $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('nisn', $nisn)->get()->getRowArray(),
                 'total_hafalan_berhasil' => $this->db->table('hafalan')->where('nisn', $nisn)->where('keterangan', 'lulus')->countAllResults(),
-                'total_kehadiran' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'hadir')->countAllResults(),
-                'total_alfa' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'alfa')->countAllResults(),
-                'total_izin' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'izin')->countAllResults(),
-                'total_sakit' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'sakit')->countAllResults(),
-                'total_tanpa_keterangan' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'tanpa_keterangan')->countAllResults()
+                'total_kehadiran' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Hadir')->countAllResults(),
+                'total_alfa' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Alpa')->countAllResults(),
+                'total_izin' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Izin')->countAllResults(),
+                'total_sakit' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Sakit')->countAllResults(),
+                'total_tanpa_keterangan' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Tanpa Keterangan')->countAllResults()
             ]
         ]);
     }
@@ -60,7 +60,7 @@ class API extends BaseController
             'status' => 200,
             'message' => 'Success',
             'data' => [
-                'absensi_siswa' => $this->db->table('absensi')->select('keterangan, tanggal')->where('nisn', $nisn)->get()->getResultArray()
+                'absensi_siswa' => $this->db->table('absensi')->select('absensi.*, guru.id_guru, guru.nama_guru')->join('guru', 'guru.id_guru = absensi.id_guru')->where('nisn', $nisn)->get()->getResultArray()
             ]
         ]);
     }
@@ -69,13 +69,13 @@ class API extends BaseController
     {
         $getSiswa = $this->db->table('siswa')->where('nisn', $nisn)->get()->getRowArray();
 
-        $getKelas = $this->db->table('kelas')->where('id_kelas', $getSiswa['id_kelas'])->get()->getRowArray();
+        $getHalaqoh = $this->db->table('halaqoh')->where('id_halaqoh', $getSiswa['id_halaqoh'])->get()->getRowArray();
 
         return $this->response->setJSON([
             'status' => 200,
             'message' => 'Success',
             'data' => [
-                'guru' => $this->db->table('guru')->where('id_guru', $getKelas['id_guru'])->get()->getRowArray(),
+                'guru' => $this->db->table('guru')->where('id_guru', $getHalaqoh['id_guru'])->get()->getRowArray(),
             ]
         ]);
     }

@@ -10,6 +10,10 @@
           <div class="sb-nav-link-icon"><i class="fa-solid fa-book text-white"></i></div>
           Kelas
         </a>
+        <a class="nav-link text-white" href="/OperatorPanel/Halaqoh">
+          <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open-reader text-white"></i></div>
+          Halaqoh
+        </a>
         <a class="nav-link text-white" href="/OperatorPanel/Siswa">
           <div class="sb-nav-link-icon"><i class="fa-solid fa-users text-white"></i></div>
           Siswa

@@ -5,7 +5,7 @@
 <?php $db = db_connect(); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4 text-white"><?= $dataKelas['nama_kelas']; ?> | ABSENSI</h1>
+  <h1 class="mt-4 text-white">Halaqoh <?= $dataHalaqoh['halaqoh']; ?> | Halaman Hafalan</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" onclick="history.back()">Kembali</button>
   </ol>
@@ -17,6 +17,7 @@
             <th>#</th>
             <th>NISN</th>
             <th>Nama Siswa</th>
+            <th>Kelas</th>
             <th>Kehadiran Hari ini</th>
             <th>Total Kehadiran</th>
             <th>Total Izin</th>
@@ -39,6 +40,7 @@
             <td><?= $key + 1; ?></td>
             <td><?= $item['nisn'] ?></td>
             <td><?= $item['nama_siswa'] ?></td>
+            <td><?= $item['kelas'] ?></td>
             <td>
               <?php
                 $absensi = $db->table('absensi')
@@ -76,7 +78,7 @@
             <?php
               $hafalan = $db->table('absensi')
                 ->where('id_siswa', $item['id_siswa'])
-                ->where('id_kelas', $dataKelas['id_kelas'])
+                ->where('id_kelas', $item['id_kelas'])
                 ->get()
                 ->getResultArray();
               foreach ($status as $s) {
@@ -109,8 +111,7 @@
         <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Absensi</h1>
         <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/GuruPanel/Absensi/Update/<?= $dataKelas['id_kelas'] ?>" method="post"
-        enctype="multipart/form-data">
+      <form action="/GuruPanel/Absensi/Update" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id_siswa" id="id_siswa-edit">
         <input type="hidden" name="id_absensi" id="id_absensi-edit">
         <div class="modal-body">
@@ -146,7 +147,7 @@
         <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Absensi</h1>
         <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/GuruPanel/Absensi/<?= $dataKelas['id_kelas'] ?>" method="post" enctype="multipart/form-data">
+      <form action="/GuruPanel/Absensi" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id_siswa" id="id_siswa">
         <div class="modal-body">
           <div class="mb-3">

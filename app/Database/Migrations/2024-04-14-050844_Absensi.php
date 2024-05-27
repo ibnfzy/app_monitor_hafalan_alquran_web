@@ -23,10 +23,6 @@ class Absensi extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 10
             ],
-            'nip' => [
-                'type' => 'VARCHAR',
-                'constraint' => 18
-            ],
             'id_kelas' => [
                 'type' => 'VARCHAR',
                 'constraint' => 5

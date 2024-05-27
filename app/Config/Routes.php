@@ -29,10 +29,11 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->get('HafalanPDF/(:num)', 'GuruController::hafalan_detail/$1');
   $routes->get('Hafalan/(:num)', 'GuruController::hafalan_/$1');
   $routes->get('Hafalan/Delete/(:num)', 'GuruController::hafalan_delete/$1');
+  $routes->post('HafalanPDF/(:num)', 'GuruController::hafalan_pdf/$1');
   $routes->post('/', 'GuruController::hafalan_insert');
   $routes->get('Absensi/(:num)', 'GuruController::absen/$1');
-  $routes->post('Absensi/(:num)', 'GuruController::absensi_proses/$1');
-  $routes->post('Absensi/Update/(:num)', 'GuruController::absensi_proses_edit/$1');
+  $routes->post('Absensi', 'GuruController::absensi_proses');
+  $routes->post('Absensi/Update', 'GuruController::absensi_proses_edit');
   $routes->get('Absensi/PDF/(:num)', 'GuruController::absensi_detail/$1');
   $routes->get('Absensi/Delete/(:num)', 'GuruController::absensi_delete/$1');
   $routes->get('Absensi/Detail/(:num)', 'GuruController::absensi_/$1');
@@ -88,6 +89,11 @@ $routes->group('OperatorPanel', function (RouteCollection $routes) {
   $routes->post('Corousel', 'OperatorController::corousel_insert');
   $routes->post('Corousel/Update', 'OperatorController::corousel_update');
   $routes->get('Corousel/(:num)', 'OperatorController::corousel_delete/$1');
+
+  $routes->get('Halaqoh', 'OperatorController::halaqoh');
+  $routes->post('Halaqoh', 'OperatorController::halaqoh_insert');
+  $routes->post('Halaqoh/Update', 'OperatorController::halaqoh_update');
+  $routes->get('Halaqoh/(:num)', 'OperatorController::halaqoh_delete/$1');
 });
 
 $routes->group('API', function (RouteCollection $routes) {

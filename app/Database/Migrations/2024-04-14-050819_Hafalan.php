@@ -24,10 +24,6 @@ class Hafalan extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 10
             ],
-            'nip_guru' => [
-                'type' => 'VARCHAR',
-                'constraint' => 18
-            ],
             'id_surah' => [
                 'type' => 'INT',
             ],

@@ -13,9 +13,9 @@ class Guru extends Migration
                 'type' => 'INT',
                 'auto_increment' => true,
             ],
-            'nip' => [
+            'id_unique_guru' => [
                 'type' => 'VARCHAR',
-                'constraint' => 18
+                'constraint' => 12
             ],
             'nama_guru' => [
                 'type' => 'VARCHAR',

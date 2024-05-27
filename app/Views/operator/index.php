@@ -13,22 +13,24 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>NIP</th>
+            <th>ID Guru</th>
             <th>Nama Guru</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-            <tr>
-              <td><?= $i = $key + 1; ?></td>
-              <td><?= $item['nip'] ?></td>
-              <td><?= $item['nama_guru'] ?></td>
-              <td>
-                <button onclick="edit(<?= $item['id_guru'] ?>, '<?= $item['nip'] ?>', '<?= $item['nama_guru'] ?>')" class="btn btn-warning">Edit</button>
-                <a href="/OperatorPanel/Delete/<?= $item['id_guru'] ?>" class="btn btn-danger">Delete</a>
-              </td>
-            </tr>
+          <tr>
+            <td><?= $i = $key + 1; ?></td>
+            <td><?= $item['id_unique_guru'] ?></td>
+            <td><?= $item['nama_guru'] ?></td>
+            <td>
+              <button
+                onclick="edit(<?= $item['id_guru'] ?>, '<?= $item['id_unique_guru'] ?>', '<?= $item['nama_guru'] ?>')"
+                class="btn btn-warning">Edit</button>
+              <a href="/OperatorPanel/Delete/<?= $item['id_guru'] ?>" class="btn btn-danger">Delete</a>
+            </td>
+          </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -47,12 +49,12 @@
       <form action="/OperatorPanel" method="post" enctype="multipart/form-data">
         <div class="modal-body">
           <div class="mb-3">
-            <label for="nip" class="form-label">NIP</label>
-            <input type="text" class="form-control" id="nip" name="nip">
-          </div>
-          <div class="mb-3">
             <label for="nama_guru" class="form-label">Nama Guru</label>
             <input type="text" class="form-control" id="nama_guru" name="nama_guru">
+          </div>
+          <div class="mb-3">
+            <label for="id_unique_guru">ID Guru</label>
+            <input type="text" class="form-control" id="id_unique_guru" name="id_unique_guru">
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
@@ -79,15 +81,15 @@
         <input type="hidden" name="id_guru" id="id_guru-edit">
         <div class="modal-body">
           <div class="mb-3">
-            <label for="nip" class="form-label">NIP</label>
-            <input type="text" class="form-control" id="nip-edit" name="nip">
-          </div>
-          <div class="mb-3">
-            <label for="nama_guru" class="form-label">Nama Guru</label>
+            <label for="nama_guru-edit" class="form-label">Nama Guru</label>
             <input type="text" class="form-control" id="nama_guru-edit" name="nama_guru">
           </div>
           <div class="mb-3">
-            <label for="password" class="form-label">Password Baru</label>
+            <label for="id_unique_guru-edit">ID Guru</label>
+            <input type="text" class="form-control" id="id_unique_guru-edit" name="id_unique_guru">
+          </div>
+          <div class="mb-3">
+            <label for="password-edit" class="form-label">Password Baru</label>
             <input type="password" class="form-control" id="password-edit" name="password">
           </div>
         </div>
@@ -105,12 +107,12 @@
 <?= $this->section('script'); ?>
 
 <script>
-  const edit = (id, nip, nama_guru) => {
-    $('#id_guru-edit').val(id)
-    $('#nip-edit').val(nip)
-    $('#nama_guru-edit').val(nama_guru)
-    $('#edit').modal('show')
-  }
+const edit = (id, id_unique_guru, nama_guru) => {
+  $('#id_guru-edit').val(id)
+  $('#id_unique_guru-edit').val(id_unique_guru)
+  $('#nama_guru-edit').val(nama_guru)
+  $('#edit').modal('show')
+}
 </script>
 
 <?= $this->endSection(); ?>

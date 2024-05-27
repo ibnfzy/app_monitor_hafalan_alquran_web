@@ -26,7 +26,7 @@
               <button
                 onclick="edit(<?= $item['id_operator'] ?>, '<?= $item['username'] ?>', '<?= $item['username'] ?>')"
                 class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Operator/Delete/<?= $item['id_operator'] ?>" class="btn btn-danger">Delete</a>
+              <a href="/OperatorPanel/Operator/<?= $item['id_operator'] ?>" class="btn btn-danger">Delete</a>
             </td>
           </tr>
           <?php endforeach ?>

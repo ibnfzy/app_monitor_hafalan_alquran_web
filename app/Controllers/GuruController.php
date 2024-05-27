@@ -20,9 +20,8 @@ class GuruController extends BaseController
     {
         return view('guru/biodata_guru', [
             'dataGuru' => $this->db->table('guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
-            'data' => $this->db->table('kelas')->where('kelas.id_guru', session()->get('id_guru'))->get()->getResultArray(),
-            'dataKelasGuru' => $this->db->table('kelas')->where('id_guru', session()->get('id_guru'))->countAllResults(),
-            'dataSiswa' => count($this->db->table('siswa')->whereIn('id_kelas', $this->db->table('kelas')->select('id_kelas')->where('id_guru', session()->get('id_guru')))->select('id_siswa')->get()->getResultArray())
+            'data' => $this->db->table('halaqoh')->where('id_guru', session()->get('id_guru'))->get()->getResultArray(),
+            'dataSiswa' => $this->db->table('siswa')->whereIn('id_halaqoh', $this->db->table('halaqoh')->select('id_halaqoh')->where('id_guru', session()->get('id_guru')))->countAllResults(),
         ]);
     }
 
@@ -34,13 +33,6 @@ class GuruController extends BaseController
                 'errors' => [
                     'required' => 'Tidak boleh kosong',
                     'max_length' => 'Maksimal 250 karakter'
-                ]
-            ],
-            'nip' => [
-                'rules' => 'required|max_length[18]',
-                'errors' => [
-                    'required' => 'Tidak boleh kosong',
-                    'max_length' => 'Maksimal 18 karakter'
                 ]
             ],
             'kontak' => [
@@ -57,7 +49,6 @@ class GuruController extends BaseController
         }
 
         $this->db->table('guru')->where('id_guru', session()->get('id_guru'))->update([
-            'nip' => $this->request->getPost('nip'),
             'nama_guru' => $this->request->getPost('nama_guru'),
             'kontak' => $this->request->getPost('kontak')
         ]);
@@ -118,11 +109,11 @@ class GuruController extends BaseController
         return redirect()->to(base_url('GuruPanel'))->with('type-status', 'success')->with('message', 'Foto profil berhasil diubah');
     }
 
-    public function hafalan($id)
+    public function hafalan($id_halaqoh)
     {
         return view('guru/hafalan', [
-            'data' => $this->db->table('siswa')->select('id_siswa, nama_siswa, nisn')->where('id_kelas', $id)->get()->getResultArray(),
-            'dataKelas' => $this->db->table('kelas')->where('id_kelas', $id)->get()->getRowArray()
+            'data' => $this->db->table('siswa')->where('id_halaqoh', $id_halaqoh)->get()->getResultArray(),
+            'dataHalaqoh' => $this->db->table('halaqoh')->where('id_halaqoh', $id_halaqoh)->get()->getRowArray()
         ]);
     }
 
@@ -204,7 +195,6 @@ class GuruController extends BaseController
             'id_siswa' => $this->request->getPost('id_siswa'),
             'id_guru' => session()->get('id_guru'),
             'nisn' => $this->request->getPost('nisn_siswa'),
-            'nip_guru' => session()->get('nip'),
             'id_surah' => $this->request->getPost('surah'),
             'nama_surah' => $surah['nama_latin'],
             'ayat' => $this->request->getPost('nomor_ayat'),
@@ -214,7 +204,7 @@ class GuruController extends BaseController
             'murojaah' => $murojaah
         ]);
 
-        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Data hafalan berhasil ditambahkan');
+        return redirect()->to(base_url('GuruPanel/HafalanPDF/' . $this->request->getPost('id_siswa')))->with('type-status', 'success')->with('message', 'Data hafalan berhasil ditambahkan');
     }
 
     public function hafalan_detail($id)
@@ -224,6 +214,35 @@ class GuruController extends BaseController
             'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray()
         ]);
+    }
+
+    public function hafalan_pdf($id_siswa)
+    {
+        $dataSiswa = $this->db->table('siswa')->where('id_siswa', $id_siswa)->get()->getRowArray();
+
+        $filePdf = $this->request->getFile('pdf_hafalan');
+
+        if (!$filePdf->isValid()) {
+            return $this->fail('file is not valid');
+        }
+
+        $fileName = ($dataSiswa['pdf_hafalan'] != null) ? $dataSiswa['pdf_hafalan'] : $filePdf->getRandomName();
+
+        if ($dataSiswa['pdf_hafalan'] != null) {
+            unlink('uploads/' . $dataSiswa['pdf_hafalan']);
+        }
+
+        if ($dataSiswa['pdf_hafalan'] == null) {
+            $this->db->table('siswa')->where('id_siswa', $id_siswa)->update([
+                'pdf_hafalan' => $fileName
+            ]);
+        }
+
+        if (!$filePdf->hasMoved()) {
+            $filePdf->move('uploads', $fileName);
+        }
+
+        return $this->respond([], 200, 'Berhasil');
     }
 
     public function hafalan_($id)
@@ -238,15 +257,15 @@ class GuruController extends BaseController
         return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Data hafalan berhasil dihapus');
     }
 
-    public function absen($id)
+    public function absen($id_halaqoh)
     {
         return view('guru/absensi', [
-            'data' => $this->db->table('siswa')->select('id_siswa, nama_siswa, nisn')->where('id_kelas', $id)->get()->getResultArray(),
-            'dataKelas' => $this->db->table('kelas')->where('id_kelas', $id)->get()->getRowArray()
+            'data' => $this->db->table('siswa')->where('id_halaqoh', $id_halaqoh)->get()->getResultArray(),
+            'dataHalaqoh' => $this->db->table('halaqoh')->where('id_halaqoh', $id_halaqoh)->get()->getRowArray()
         ]);
     }
 
-    public function absensi_proses($id)
+    public function absensi_proses()
     {
         $rules = [
             'id_siswa' => [
@@ -270,25 +289,24 @@ class GuruController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->to(base_url('GuruPanel/Absensi/' . $id))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+            return redirect()->to(previous_url())->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
         }
 
-        $getSiswa = $this->db->table('siswa')->select('nisn')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
+        $getSiswa = $this->db->table('siswa')->select('nisn, id_kelas')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
 
         $this->db->table('absensi')->insert([
             'id_siswa' => $this->request->getPost('id_siswa'),
             'keterangan' => $this->request->getPost('absensi'),
             'tanggal' => date('Y-m-d', strtotime((string)$this->request->getPost('tanggal'))),
-            'id_kelas' => $id,
+            'id_kelas' => $getSiswa['id_kelas'],
             'id_guru' => session()->get('id_guru'),
-            'nip' => session()->get('nip'),
             'nisn' => $getSiswa['nisn']
         ]);
 
-        return redirect()->to(base_url('GuruPanel/Absensi/' . $id))->with('type-status', 'success')->with('message', 'Absensi siswa ' . $getSiswa['nisn'] . ' berhasil ditambahkan');
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Absensi siswa ' . $getSiswa['nisn'] . ' berhasil ditambahkan');
     }
 
-    public function absensi_proses_edit($id)
+    public function absensi_proses_edit()
     {
         $rules = [
             'id_absensi' => [
@@ -318,10 +336,10 @@ class GuruController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->to(base_url('GuruPanel/Absensi/' . $id))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+            return redirect()->to(previous_url())->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
         }
 
-        $getSiswa = $this->db->table('siswa')->select('nisn')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
+        $getSiswa = $this->db->table('siswa')->select('nisn, id_kelas')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
 
         $this->db->table('absensi')
             ->where('id_absensi', $this->request->getPost('id_absensi'))
@@ -329,13 +347,12 @@ class GuruController extends BaseController
                 'id_siswa' => $this->request->getPost('id_siswa'),
                 'keterangan' => $this->request->getPost('absensi'),
                 'tanggal' => date('Y-m-d', strtotime((string)$this->request->getPost('tanggal'))),
-                'id_kelas' => $id,
+                'id_kelas' => $getSiswa['id_kelas'],
                 'id_guru' => session()->get('id_guru'),
-                'nip' => session()->get('nip'),
                 'nisn' => $getSiswa['nisn']
             ]);
 
-        return redirect()->to(base_url('GuruPanel/Absensi/' . $id))->with('type-status', 'success')->with('message', 'Absensi siswa ' . $getSiswa['nisn'] . ' berhasil ditambahkan');
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Absensi siswa ' . $getSiswa['nisn'] . ' berhasil ditambahkan');
     }
 
     public function absensi_detail($id)
@@ -471,13 +488,6 @@ class GuruController extends BaseController
                     'required' => 'Siswa harus dipilih, tidak boleh kosong'
                 ]
             ],
-            'halaqoh' => [
-                'rules' => 'required|max_length[150]',
-                'errors' => [
-                    'required' => 'Halaqoh harus dipilih, tidak boleh kosong',
-                    'max_length' => 'Maksimal 150 karakter'
-                ]
-            ],
             'pres_adab_halaqoh' => [
                 'rules' => 'required',
                 'errors' => [
@@ -536,15 +546,15 @@ class GuruController extends BaseController
 
         $checkAction = $this->request->getPost('action');
 
-        $getSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa, id_kelas')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
+        $getSiswa = $this->db->table('siswa')->select('siswa.*, halaqoh.halaqoh')->where('id_siswa', $this->request->getPost('id_siswa'))->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->get()->getRowArray();
 
-        $getKelas = $this->db->table('kelas')->select('id_kelas, id_guru, semester, tahun_ajaran, nama_kelas')->where('id_kelas', $getSiswa['id_kelas'])->get()->getRowArray();
+        $getKelas = $this->db->table('kelas')->select('id_kelas, semester, tahun_ajaran, nama_kelas')->where('id_kelas', $getSiswa['id_kelas'])->get()->getRowArray();
 
-        $getTotalSakit = $this->db->table('absensi')->select('SUM(keterangan) as total_sakit')->where('keterangan', 'sakit')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalSakit = $this->db->table('absensi')->select('SUM(keterangan) as total_sakit')->where('keterangan', 'Sakit')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
 
-        $getTotalIzin = $this->db->table('absensi')->select('SUM(keterangan) as total_izin')->where('keterangan', 'izin')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalIzin = $this->db->table('absensi')->select('SUM(keterangan) as total_izin')->where('keterangan', 'Izin')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
 
-        $getTotalAlfa = $this->db->table('absensi')->select('SUM(keterangan) as total_alfa')->where('keterangan', 'alpa')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalAlfa = $this->db->table('absensi')->select('SUM(keterangan) as total_alfa')->where('keterangan', 'Alpa')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
 
         $data = [
             'id_siswa' => $this->request->getPost('id_siswa'),
@@ -554,7 +564,7 @@ class GuruController extends BaseController
             'kelas' => $getKelas['nama_kelas'],
             'semester' => $getKelas['semester'],
             'tahun_ajaran' => $getKelas['tahun_ajaran'],
-            'halaqoh' => $this->request->getPost('halaqoh'),
+            'halaqoh' => $getSiswa['halaqoh'],
             'prestasi_adab_halaqoh' => $this->request->getPost('pres_adab_halaqoh'),
             'prestasi_tahsin' => $this->request->getPost('pres_tahsin'),
             'prestasi_tahfidz' => $this->request->getPost('pres_tahfidz'),

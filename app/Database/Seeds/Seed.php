@@ -12,8 +12,9 @@ class Seed extends Seeder
         $this->call('operator');
         $this->call('kelas');
         $this->call('siswa');
-        $this->call('Hafalan');
+        $this->call('Halaqoh');
         $this->call('Kegiatan');
         $this->call('Corousel');
+        $this->call('Hafalan');
     }
 }

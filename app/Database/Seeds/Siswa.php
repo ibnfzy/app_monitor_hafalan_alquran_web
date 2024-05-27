@@ -11,25 +11,15 @@ class Siswa extends Seeder
     {
         $faker = Factory::create();
 
-        $halaqoh = [
-            'Abu bakar Ash-Shiddiq',
-            'Ali bin Abi Thalib',
-            'Umar bin Khattab',
-            'Utsman bin Affan',
-            "Mus'ab bin Umair",
-            'Zaid bin Tsabit 1',
-            'Zaid bin Tsabit 2'
-        ];
-
         for ($i = 0; $i < 200; $i++) {
             $nisn = rand(1000000000, 9999999999);
 
             $data = [
                 'id_kelas' => rand(1, 2), // Ganti 10 dengan jumlah kelas yang tersedia
-                'kelas' => 'Kelas ' . rand(1, 2), // Ganti 5 dengan jumlah kelas yang tersedia
+                'kelas' => rand(1, 2), // Ganti 5 dengan jumlah kelas yang tersedia
                 'nisn' => $nisn,
                 'nama_siswa' => $faker->firstName(),
-                'halaqoh' => $halaqoh[rand(0, 6)],
+                'id_halaqoh' => rand(1, 7),
             ];
 
             $dataOrangTua = [

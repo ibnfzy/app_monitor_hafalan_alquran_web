@@ -3,7 +3,7 @@
 <?= $this->section('content'); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4">Tabel Kegiatan</h1>
+  <h1 class="mt-4">Tabel Halaqoh</h1>
   <ol class="breadcrumb mb-4">
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
@@ -13,8 +13,8 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Judul</th>
-            <th>Deskripsi</th>
+            <th>Halaqoh</th>
+            <th>Nama Guru</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -22,15 +22,12 @@
           <?php foreach ($data as $key => $item) : ?>
           <tr>
             <td><?= $i = $key + 1; ?></td>
-            <td class="col-4"><?= $item['judul'] ?> <img src="/uploads/<?= $item['gambar'] ?>" alt=""
-                class="image-fluid w-50 d-block">
-            </td>
-            <td class="col-4"><?= $item['deskripsi'] ?></td>
+            <td><?= $item['halaqoh'] ?></td>
+            <td><?= $item['nama_guru'] ?></td>
             <td>
-              <button
-                onclick="edit(<?= $item['id_kegiatan'] ?>, '<?= $item['judul'] ?>', '<?= $item['deskripsi'] ?>', '<?= $item['gambar'] ?>')"
+              <button onclick="edit(<?= $item['id_halaqoh'] ?>, '<?= $item['halaqoh'] ?>', '<?= $item['id_guru'] ?>')"
                 class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Kegiatan/<?= $item['id_kegiatan'] ?>" class="btn btn-danger">Delete</a>
+              <a href="/OperatorPanel/Halaqoh/<?= $item['id_halaqoh'] ?>" class="btn btn-danger">Delete</a>
             </td>
           </tr>
           <?php endforeach ?>
@@ -48,21 +45,24 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/OperatorPanel/Kegiatan" method="post" enctype="multipart/form-data">
+      <form action="/OperatorPanel/Halaqoh" method="post">
         <div class="modal-body">
           <div class="mb-3">
-            <label for="judul" class="form-label">Judul</label>
-            <input type="text" class="form-control" id="judul" name="judul">
+            <label for="halaqoh" class="form-label">Halaqoh</label>
+            <input type="text" class="form-control" id="halaqoh" name="halaqoh">
           </div>
 
           <div class="mb-3">
-            <label for="gambar" class="form-label">Pilih Gambar</label>
-            <input type="file" name="gambar" id="gambar" class="form-control">
-          </div>
+            <label for="id_guru" class="form-label">Pilih Guru</label>
+            <select name="id_guru" class="form-control">
+              <?php foreach ($dataGuru as $item) : ?>
+              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
+              <?php endforeach ?>
 
-          <div class="mb-3">
-            <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" id="deskripsi" cols="30" rows="10" class="form-control"></textarea>
+              <?php if (count($dataGuru) == 0) : ?>
+              <option value="" disabled selected>Belum ada guru</option>
+              <?php endif ?>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
@@ -83,23 +83,25 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/OperatorPanel/Kegiatan/Update" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id_kegiatan" id="id_kegiatan-edit">
+      <form action="/OperatorPanel/Halaqoh/Update" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id_halaqoh" id="id_halaqoh-edit">
         <div class="modal-body">
           <div class="mb-3">
-            <label for="judul-edit" class="form-label">Judul</label>
-            <input type="text" class="form-control" id="judul-edit" name="judul">
+            <label for="halaqoh-edit" class="form-label">Halaqoh</label>
+            <input type="text" class="form-control" id="halaqoh-edit" name="halaqoh">
           </div>
 
           <div class="mb-3">
-            <label for="gambar" class="form-label">Pilih Gambar</label>
-            <img src="#" alt="" class="image-fluid d-block w-25 my-2" id="image-edit">
-            <input type="file" name="gambar" class="form-control">
-          </div>
+            <label for="id_guru-edit" class="form-label">Pilih Guru</label>
+            <select name="id_guru" id="id_guru-edit" class="form-control">
+              <?php foreach ($dataGuru as $item) : ?>
+              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
+              <?php endforeach ?>
 
-          <div class="mb-3">
-            <label for="deskripsi" class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" id="deskripsi-edit" cols="30" rows="10" class="form-control"></textarea>
+              <?php if (count($dataGuru) == 0) : ?>
+              <option value="" disabled selected>Belum ada guru</option>
+              <?php endif ?>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
@@ -116,12 +118,14 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, judul, deskripsi, gambar) => {
-  $('#id_kegiatan-edit').val(id)
-  $('#judul-edit').val(judul)
-  $('#deskripsi-edit').val(deskripsi)
-  $('#image-edit').attr('src', '/uploads/' +
-    gambar)
+const edit = (id, halaqoh, id_guru) => {
+  $('#id_halaqoh-edit').val(id)
+  $('#halaqoh-edit').val(halaqoh)
+  $('#id_guru-edit option').each(function() {
+    if ($(this).val() == id_guru) {
+      $(this).prop('selected', true)
+    }
+  })
   $('#edit').modal('show')
 }
 </script>

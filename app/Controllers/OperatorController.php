@@ -24,11 +24,11 @@ class OperatorController extends BaseController
     public function guru_insert()
     {
         $rules = [
-            'nip' => [
-                'rules' => 'required|is_unique[guru.nip]',
+            'id_unique_guru' => [
+                'rules' => 'required|is_unique[guru.id_unique_guru]',
                 'errors' => [
-                    'required' => 'NIP tidak boleh kosong',
-                    'is_unique' => 'NIP sudah terdaftar'
+                    'required' => 'ID Guru tidak boleh kosong',
+                    'is_unique' => 'ID Guru sudah terdaftar'
                 ]
             ],
             'nama_guru' => [
@@ -50,7 +50,7 @@ class OperatorController extends BaseController
         }
 
         $this->db->table('guru')->insert([
-            'nip' => $this->request->getPost('nip'),
+            'id_unique_guru' => $this->request->getPost('id_unique_guru'),
             'nama_guru' => $this->request->getPost('nama_guru'),
             'password' => password_hash((string) $this->request->getPost('password'), PASSWORD_BCRYPT),
         ]);
@@ -65,10 +65,11 @@ class OperatorController extends BaseController
             'id_guru' => [
                 'rules' => 'required',
             ],
-            'nip' => [
-                'rules' => 'required|is_unique[guru.nip, id_guru, {id_guru}]',
+            'id_unique_guru' => [
+                'rules' => 'required|is_unique[guru.id_unique_guru, id_guru, {id_guru}]',
                 'errors' => [
-                    'required' => 'NIP tidak boleh kosong'
+                    'required' => 'ID Guru tidak boleh kosong',
+                    'is_unique' => 'ID Guru sudah terdaftar'
                 ]
             ],
             'nama_guru' => [
@@ -84,7 +85,7 @@ class OperatorController extends BaseController
         }
 
         $this->db->table('guru')->where('id_guru', $this->request->getPost('id_guru'))->update([
-            'nip' => $this->request->getPost('nip'),
+            'id_unique_guru' => $this->request->getPost('id_unique_guru'),
             'nama_guru' => $this->request->getPost('nama_guru'),
         ]);
 
@@ -108,8 +109,7 @@ class OperatorController extends BaseController
     public function kelas()
     {
         return view('operator/kelas', [
-            'data' => $this->db->table('kelas')->join('guru', 'guru.id_guru = kelas.id_guru', 'left')->orderBy('id_kelas', 'DESC')->get()->getResultArray(),
-            'guru' => $this->db->table('guru')->orderBy('id_guru', 'DESC')->get()->getResultArray()
+            'data' => $this->db->table('kelas')->orderBy('id_kelas', 'DESC')->get()->getResultArray()
         ]);
     }
 
@@ -122,12 +122,20 @@ class OperatorController extends BaseController
                     'required' => 'Nama tidak boleh kosong'
                 ]
             ],
-            'id_guru' => [
-                'rules' => 'required',
+            'tahun_ajaran' => [
+                'rules' => 'required|max_length[10]',
                 'errors' => [
-                    'required' => 'Guru tidak boleh kosong'
+                    'required' => 'Tahun ajaran tidak boleh kosong',
+                    'max_length' => 'Semester tidak boleh lebih dari 10 karakter'
                 ]
-            ]
+            ],
+            'semester' => [
+                'rules' => 'required|max_length[1]',
+                'errors' => [
+                    'required' => 'Semester tidak boleh kosong',
+                    'max_length' => 'Semester tidak boleh lebih dari 1 karakter'
+                ]
+            ],
         ];
 
         if (!$this->validate($rules)) {
@@ -136,7 +144,8 @@ class OperatorController extends BaseController
 
         $this->db->table('kelas')->insert([
             'nama_kelas' => $this->request->getPost('nama_kelas'),
-            'id_guru' => $this->request->getPost('id_guru')
+            'tahun_ajaran' => $this->request->getPost('tahun_ajaran'),
+            'semester' => $this->request->getPost('semester'),
         ]);
 
         return redirect()->to(base_url('OperatorPanel/Kelas'))->with('type-status', 'success')
@@ -155,12 +164,20 @@ class OperatorController extends BaseController
                     'required' => 'Nama tidak boleh kosong'
                 ]
             ],
-            'id_guru' => [
-                'rules' => 'required',
+            'tahun_ajaran' => [
+                'rules' => 'required|max_length[10]',
                 'errors' => [
-                    'required' => 'Guru tidak boleh kosong'
+                    'required' => 'Tahun ajaran tidak boleh kosong',
+                    'max_length' => 'Semester tidak boleh lebih dari 10 karakter'
                 ]
-            ]
+            ],
+            'semester' => [
+                'rules' => 'required|max_length[1]',
+                'errors' => [
+                    'required' => 'Semester tidak boleh kosong',
+                    'max_length' => 'Semester tidak boleh lebih dari 1 karakter'
+                ]
+            ],
         ];
 
         if (!$this->validate($rules)) {
@@ -169,7 +186,8 @@ class OperatorController extends BaseController
 
         $this->db->table('kelas')->where('id_kelas', $this->request->getPost('id_kelas'))->update([
             'nama_kelas' => $this->request->getPost('nama_kelas'),
-            'id_guru' => $this->request->getPost('id_guru')
+            'tahun_ajaran' => $this->request->getPost('tahun_ajaran'),
+            'semester' => $this->request->getPost('semester'),
         ]);
 
         return redirect()->to(base_url('OperatorPanel/Kelas'))->with('type-status', 'success')
@@ -186,8 +204,9 @@ class OperatorController extends BaseController
     public function siswa()
     {
         return view('operator/siswa', [
-            'data' => $this->db->table('siswa')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
-            'kelas' => $this->db->table('kelas')->orderBy('id_kelas', 'DESC')->get()->getResultArray()
+            'data' => $this->db->table('siswa')->select('siswa.*, orang_tua.nama_orang_tua, halaqoh.*, guru.id_guru, guru.nama_guru')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh', 'left')->join('guru', 'guru.id_guru = halaqoh.id_guru', 'left')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
+            'kelas' => $this->db->table('kelas')->orderBy('id_kelas', 'DESC')->get()->getResultArray(),
+            'dataHalaqoh' => $this->db->table('halaqoh')->orderBy('id_halaqoh', 'DESC')->get()->getResultArray(),
         ]);
     }
 
@@ -232,6 +251,12 @@ class OperatorController extends BaseController
                     'required' => 'Konfirmasi password tidak boleh kosong',
                     'matches' => 'Konfirmasi password tidak sama dengan password'
                 ]
+            ],
+            'id_halaqoh' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Halaqoh tidak boleh kosong'
+                ]
             ]
         ];
 
@@ -245,7 +270,7 @@ class OperatorController extends BaseController
             'nisn' => $this->request->getPost('nisn'),
             'nama_siswa' => $this->request->getPost('nama_siswa'),
             'id_kelas' => $this->request->getPost('id_kelas'),
-            'halaqoh' => $this->request->getPost('halaqoh'),
+            'id_halaqoh' => $this->request->getPost('id_halaqoh'),
             'kelas' => $getKelas['nama_kelas']
         ]);
 
@@ -294,6 +319,12 @@ class OperatorController extends BaseController
                     'max_length' => 'Nama Orang tua tidak boleh lebih dari 250 karakter'
                 ]
             ],
+            'id_halaqoh' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Halaqoh tidak boleh kosong'
+                ]
+            ]
         ];
 
         if ($this->request->getPost('password') != '') {
@@ -323,7 +354,7 @@ class OperatorController extends BaseController
             'nisn' => $this->request->getPost('nisn'),
             'nama_siswa' => $this->request->getPost('nama_siswa'),
             'id_kelas' => $this->request->getPost('id_kelas'),
-            'halaqoh' => $this->request->getPost('halaqoh'),
+            'id_halaqoh' => $this->request->getPost('id_halaqoh'),
             'kelas' => $getKelas['nama_kelas']
         ]);
 
@@ -660,5 +691,90 @@ class OperatorController extends BaseController
         }
 
         return redirect()->to(base_url('OperatorPanel/Corousel'))->with('type-status', 'success')->with('message', 'Data berhasil diupdate');
+    }
+
+    public function halaqoh()
+    {
+        return view('operator/halaqoh', [
+            'data' => $this->db->table('halaqoh')->select('halaqoh.*, guru.id_guru, guru.nama_guru')->join('guru', 'guru.id_guru = halaqoh.id_guru', 'left')->orderBy('id_halaqoh', 'DESC')->get()->getResultArray(),
+            'dataGuru' => $this->db->table('guru')->get()->getResultArray()
+        ]);
+    }
+
+    public function halaqoh_insert()
+    {
+        $rules = [
+            'id_guru' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'ID guru tidak boleh kosong'
+                ]
+            ],
+            'halaqoh' => [
+                'rules' => 'required|max_length[150]|is_unique[halaqoh.halaqoh]',
+                'errors' => [
+                    'required' => 'Halaqoh tidak boleh kosong',
+                    'max_length' => 'Halaqoh tidak boleh lebih dari 150 karakter',
+                    'is_unique' => 'Halaqoh sudah terdaftar'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Halaqoh'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $this->db->table('halaqoh')->insert([
+            'id_guru' => $this->request->getPost('id_guru'),
+            'halaqoh' => $this->request->getPost('halaqoh')
+        ]);
+
+        return redirect()->to(base_url('OperatorPanel/Halaqoh'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil ditambahkan');
+    }
+
+    public function halaqoh_update()
+    {
+        $rules = [
+            'id_halaqoh' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'ID halaqoh tidak boleh kosong'
+                ]
+            ],
+            'halaqoh' => [
+                'rules' => 'required|max_length[150]|is_unique[halaqoh.halaqoh, id_halaqoh, {id_halaqoh}]',
+                'errors' => [
+                    'required' => 'Halaqoh tidak boleh kosong',
+                    'max_length' => 'Halaqoh tidak boleh lebih dari 150 karakter',
+                    'is_unique' => 'Halaqoh sudah terdaftar'
+                ]
+            ],
+            'id_guru' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'ID guru tidak boleh kosong'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(base_url('OperatorPanel/Halaqoh'))->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $this->db->table('halaqoh')->where('id_halaqoh', $this->request->getPost('id_halaqoh'))->update([
+            'id_guru' => $this->request->getPost('id_guru'),
+            'halaqoh' => $this->request->getPost('halaqoh')
+        ]);
+
+        return redirect()->to(base_url('OperatorPanel/Halaqoh'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil diupdate');
+    }
+
+    public function halaqoh_delete($id)
+    {
+        $this->db->table('halaqoh')->where('id_halaqoh', $id)->delete();
+        return redirect()->to(base_url('OperatorPanel/Halaqoh'))->with('type-status', 'success')
+            ->with('message', 'Data berhasil dihapus');
     }
 }

@@ -39,14 +39,9 @@
 </div>
 
 <?php
-$getKelas = $db->table('kelas')->where('id_guru', session()->get('id_guru'))->get()->getResultArray();
+$getHalaqoh = $db->table('halaqoh')->where('id_guru', session()->get('id_guru'))->get()->getRowArray();
 
-$arrayIdKelas = [];
-foreach ($getKelas as $item) {
-  $arrayIdKelas[] = $item['id_kelas'];
-}
-
-$getSiswa = $db->table('siswa')->whereIn('id_kelas', $arrayIdKelas)->get()->getResultArray();
+$getSiswa = $db->table('siswa')->where('id_halaqoh', $getHalaqoh['id_halaqoh'])->get()->getResultArray();
 ?>
 
 
@@ -70,10 +65,6 @@ $getSiswa = $db->table('siswa')->whereIn('id_kelas', $arrayIdKelas)->get()->getR
                   </option>
                   <?php endforeach ?>
                 </select>
-              </div>
-              <div class="mb-3">
-                <label for="halaqoh" class="form-label">Halaqoh</label>
-                <input type="text" class="form-control" id="halaqoh" name="halaqoh" required>
               </div>
               <div class="mb-3">
                 <label for="pres_adab_halaqoh" class="form-label">Prestasi Adab Halaqoh</label>
