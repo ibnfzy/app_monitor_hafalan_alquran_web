@@ -23,6 +23,10 @@ class OrangTua extends Migration
             ],
             'password' => [
                 'type' => 'TEXT'
+            ],
+            'token_device' => [
+                'type' => 'TEXT',
+                'null' => true
             ]
         ]);
 

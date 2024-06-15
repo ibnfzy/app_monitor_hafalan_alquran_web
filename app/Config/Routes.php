@@ -31,6 +31,14 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->get('Hafalan/Delete/(:num)', 'GuruController::hafalan_delete/$1');
   $routes->post('HafalanPDF/(:num)', 'GuruController::hafalan_pdf/$1');
   $routes->post('/', 'GuruController::hafalan_insert');
+  $routes->get('HafalanSiswa/(:num)', 'GuruController::hafalan_siswa/$1');
+  $routes->post('HafalanSiswa/Tahsin', 'GuruController::hafalan_tahsin_insert');
+  $routes->post('HafalanSiswa/Murojaah', 'GuruController::hafalan_murojaah_insert');
+  $routes->post('HafalanSiswa/HafalanBaru', 'GuruController::hafalan_baru_insert');
+  $routes->get('HafalanSiswa/Rekap/(:num)', 'GuruController::hafalan_siswa_detail/$1');
+  $routes->get('HafalanSiswa/Detail/(:num)', 'GuruController::hafalan_siswa_/$1');
+  $routes->get('HafalanSiswa/(:segment)/(:num)', 'GuruController::hafalan_siswa_delete/$1/$2');
+
   $routes->get('Absensi/(:num)', 'GuruController::absen/$1');
   $routes->post('Absensi', 'GuruController::absensi_proses');
   $routes->post('Absensi/Update', 'GuruController::absensi_proses_edit');
@@ -104,4 +112,7 @@ $routes->group('API', function (RouteCollection $routes) {
   $routes->get('Hafalan/(:num)', 'API::hafalan/$1');
   $routes->get('PDF/(:num)', 'API::webview_blobpdf/$1');
   $routes->get('RekapNilai/(:num)', 'API::rekap_nilai/$1');
+  $routes->post('Token', 'API::save_token_device');
+  $routes->get('Notifikasi/(:num)', 'API::show_all_notifikasi/$1');
+  $routes->post('Notfikasi', 'GuruController::test_notifikasi');
 });

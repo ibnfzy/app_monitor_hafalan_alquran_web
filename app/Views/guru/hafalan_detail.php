@@ -17,7 +17,7 @@
       <tr>
         <th rowspan="2">No</th>
         <th colspan="3">Tahsin</th>
-        <th>Muroja'ah</th>
+        <th colspan="3">Muroja'ah</th>
         <th colspan="3">Hafalan Baru</th>
       </tr>
       <tr>
@@ -25,6 +25,8 @@
         <th>Halaman</th>
         <th>Jilid</th>
         <th>Surah</th>
+        <th>Ayat</th>
+        <th>Keterangan</th>
         <th>Surah</th>
         <th>Ayat</th>
         <th>Keterangan</th>
@@ -40,25 +42,47 @@
             <?= $item['tanggal_input']; ?>
           </td>
           <td>
-            <?= $item['ayat']; ?>
+            <?= $item['halaman']; ?>
           </td>
           <td>
             <?= $item['jilid']; ?>
           </td>
-          <td>
-            <?php if ($item['murojaah'] == 1) : ?>
+          <?php if ($item['murojaah'] == 1) : ?>
+            <td>
               <?= $item['nama_surah']; ?>
-            <?php endif ?>
-          </td>
-          <td>
-            <?= $item['nama_surah']; ?>
-          </td>
-          <td>
-            <?= $item['ayat']; ?>
-          </td>
-          <td>
-            <?= $item['keterangan']; ?>
-          </td>
+            </td>
+            <td>
+              <?= $item['ayat']; ?>
+            </td>
+            <td>
+              <?= $item['keterangan']; ?>
+            </td>
+          <?php else : ?>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+          <?php endif ?>
+          <?php if ($item['murojaah'] == 0) : ?>
+            <td>
+              <?= $item['nama_surah']; ?>
+            </td>
+            <td>
+              <?= $item['ayat']; ?>
+            </td>
+            <td>
+              <?= $item['keterangan']; ?>
+            </td>
+          <?php else : ?>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+          <?php endif ?>
         </tr>
       <?php endforeach ?>
     </tbody>

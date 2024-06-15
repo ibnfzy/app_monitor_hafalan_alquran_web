@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Database\RawSql;
+use Google\Client;
+use GuzzleHttp\Client as GuzzleClient;
 
 class GuruController extends BaseController
 {
@@ -23,6 +25,29 @@ class GuruController extends BaseController
             'data' => $this->db->table('halaqoh')->where('id_guru', session()->get('id_guru'))->get()->getResultArray(),
             'dataSiswa' => $this->db->table('siswa')->whereIn('id_halaqoh', $this->db->table('halaqoh')->select('id_halaqoh')->where('id_guru', session()->get('id_guru')))->countAllResults(),
         ]);
+    }
+
+    public function message($type, $nama_siswa, $nama_surah = null)
+    {
+        switch ($type) {
+            case 'Tahsin':
+                $message = "Tahsin $nama_siswa, telah dilakukan";
+                break;
+
+            case 'Murojaah':
+                $message = "Murojaah $nama_siswa : $nama_surah telah dilakukan";
+                break;
+
+            case 'Hafalan Baru':
+                $message = "Hafalan baru $nama_siswa : $nama_surah telah dilakukan";
+                break;
+
+            default:
+                $message = "Tahsin $nama_siswa, telah dilakukan";
+                break;
+        }
+
+        return $message;
     }
 
     public function edit_biodata()
@@ -117,6 +142,205 @@ class GuruController extends BaseController
         ]);
     }
 
+    public function hafalan_siswa($id_halaqoh)
+    {
+        return view('guru/hafalan_siswa', [
+            'data' => $this->db->table('siswa')->where('id_halaqoh', $id_halaqoh)->get()->getResultArray(),
+            'dataHalaqoh' => $this->db->table('halaqoh')->where('id_halaqoh', $id_halaqoh)->get()->getRowArray()
+        ]);
+    }
+
+    public function hafalan_tahsin_insert()
+    {
+        $rules = [
+            'id_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Siswa harus dipilih'
+                ]
+            ],
+            'nisn_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Siswa harus dipilih'
+                ]
+            ],
+            'halaman' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Halaman tidak boleh kosong',
+                    'max_length' => 'Halaman maximal 250 karakter'
+                ]
+            ],
+            'tanggal_tahsin' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tanggal tidak boleh kosong'
+                ]
+            ],
+            'jilid' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Jilid tidak boleh kosong',
+                    'max_length' => 'Jilid maximal 250 karakter'
+                ]
+            ],
+            'keterangan' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Keterangan tidak boleh kosong',
+                    'max_length' => 'Keterangan maximal 250 karakter'
+                ]
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(previous_url())->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $this->save_notifikasi($this->request->getPost('nisn_siswa'), 'Tahsin');
+
+        $this->db->table('tahsin')->insert([
+            'id_siswa' => $this->request->getPost('id_siswa'),
+            'nisn' => $this->request->getPost('nisn_siswa'),
+            'halaman' => $this->request->getPost('halaman'),
+            'jilid' => $this->request->getPost('jilid'),
+            'tanggal_tahsin' => $this->request->getPost('tanggal_tahsin'),
+            'keterangan' => $this->request->getPost('keterangan'),
+            'id_guru' => session()->get('id_guru')
+        ]);
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Tahsin berhasil ditambahkan');
+    }
+
+    public function hafalan_murojaah_insert()
+    {
+        $rules = [
+            'id_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tidak boleh kosong'
+                ]
+            ],
+            'nisn_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tidak boleh kosong'
+                ]
+            ],
+            'surah' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Wajib memilih surah'
+                ]
+            ],
+            'ayat' => [
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'Ayat tidak boleh kosong',
+                    'max_length' => 'Ayat maximal 255 karakter'
+                ]
+            ],
+            'keterangan' => [
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'Keterangan tidak boleh kosong',
+                    'max_length' => 'Keterangan maximal 255 karakter'
+                ]
+            ],
+            'tanggal_murojaah' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tanggal tidak boleh kosong'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(previous_url())->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $surah = $this->db->table('al_quran_surah')->where('nomor', $this->request->getPost('surah'))->get()->getRowArray();
+
+        $this->save_notifikasi($this->request->getPost('nisn_siswa'), 'Murojaah ', $surah['nama_latin']);
+
+        $this->db->table('murojaah')->insert([
+            'id_siswa' => $this->request->getPost('id_siswa'),
+            'nisn' => $this->request->getPost('nisn_siswa'),
+            'surah' => $surah['nama_latin'],
+            'ayat' => $this->request->getPost('ayat'),
+            'keterangan' => $this->request->getPost('keterangan'),
+            'tanggal_murojaah' => $this->request->getPost('tanggal_murojaah'),
+            'id_guru' => session()->get('id_guru')
+        ]);
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Murojaah berhasil ditambahkan');
+    }
+
+    public function hafalan_baru_insert()
+    {
+        $rules = [
+            'id_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tidak boleh kosong'
+                ]
+            ],
+            'nisn_siswa' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tidak boleh kosong'
+                ]
+            ],
+            'surah' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Wajib memilih surah'
+                ]
+            ],
+            'ayat' => [
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'Ayat tidak boleh kosong',
+                    'max_length' => 'Ayat maximal 255 karakter'
+                ]
+            ],
+            'keterangan' => [
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'Keterangan tidak boleh kosong',
+                    'max_length' => 'Keterangan maximal 255 karakter'
+                ]
+            ],
+            'tanggal_hafalan_baru' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Tanggal tidak boleh kosong'
+                ]
+            ]
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->to(previous_url())->with('type-status', 'error')->with('dataMessage', $this->validator->getErrors());
+        }
+
+        $surah = $this->db->table('al_quran_surah')->where('nomor', $this->request->getPost('surah'))->get()->getRowArray();
+
+        $this->save_notifikasi($this->request->getPost('nisn_siswa'), 'Hafalan Baru', $surah['nama_latin']);
+
+        $this->db->table('hafalan_baru')->insert([
+            'id_siswa' => $this->request->getPost('id_siswa'),
+            'nisn' => $this->request->getPost('nisn_siswa'),
+            'surah' => $surah['nama_latin'],
+            'ayat' => $this->request->getPost('ayat'),
+            'keterangan' => $this->request->getPost('keterangan'),
+            'tanggal_hafalan_baru' => $this->request->getPost('tanggal_hafalan_baru'),
+            'id_guru' => session()->get('id_guru')
+        ]);
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Hafalan baru berhasil ditambahkan');
+    }
+
     public function hafalan_insert()
     {
         $rules = [
@@ -157,6 +381,13 @@ class GuruController extends BaseController
                     'required' => 'Tidak boleh kosong',
                     'max_length' => 'Maksimal 250 karakter'
                 ]
+            ],
+            'halaman' => [
+                'rules' => 'required|max_length[250]',
+                'errors' => [
+                    'required' => 'Halaman tidak boleh kosong',
+                    'max_length' => 'Maksimal 250 karakter'
+                ]
             ]
         ];
 
@@ -166,30 +397,7 @@ class GuruController extends BaseController
 
         $surah = $this->db->table('al_quran_surah')->where('nomor', $this->request->getPost('surah'))->get()->getRowArray();
 
-        switch ($this->request->getPost('keterangan')) {
-            case 'hafal':
-                $keterangan = 'hafal';
-                $jilid = 'fasih';
-                $murojaah = 0;
-                break;
-
-            case 'fasih':
-                $keterangan = 'belum hafal';
-                $jilid = 'fasih';
-                $murojaah = 1;
-                break;
-
-            case 'belum':
-                $keterangan = 'belum hafal';
-                $jilid = 'belum fasih';
-                $murojaah = 1;
-
-            default:
-                $keterangan = 'belum hafal';
-                $jilid = 'belum fasih';
-                $murojaah = 1;
-                break;
-        }
+        $response = $this->save_notifikasi($this->request->getPost('nisn_siswa'), $this->request->getPost('keterangan'), $surah['nama_latin']);
 
         $this->db->table('hafalan')->insert([
             'id_siswa' => $this->request->getPost('id_siswa'),
@@ -199,12 +407,105 @@ class GuruController extends BaseController
             'nama_surah' => $surah['nama_latin'],
             'ayat' => $this->request->getPost('nomor_ayat'),
             'tanggal_input' => $this->request->getPost('tanggal_input'),
-            'keterangan' => $keterangan,
-            'jilid' => $jilid,
-            'murojaah' => $murojaah
+            'keterangan' => ($this->request->getPost('murojaah') != '') ? $this->request->getPost('keterangan') : 'belum hafal',
+            'jilid' => $this->request->getPost('jilid') ?? '',
+            'murojaah' => ($this->request->getPost('murojaah') != '') ? 1 : 0,
+            'halaman' => $this->request->getPost('halaman'),
         ]);
 
         return redirect()->to(base_url('GuruPanel/HafalanPDF/' . $this->request->getPost('id_siswa')))->with('type-status', 'success')->with('message', 'Data hafalan berhasil ditambahkan');
+    }
+
+    public function save_notifikasi($nisn, $type, $namaSurah = null)
+    {
+        $getData = $this->db->table('siswa')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->where('siswa.nisn', $nisn)->get()->getRowArray();
+
+        $respon = 'Not Send Notification';
+
+        try {
+            if (!is_null($getData['token_device'])) {
+                $message = $this->message($type, $getData['nama_siswa'], $namaSurah);
+
+                $respon = $this->send_notifikasi('SDIT Bombang Talluna Bira', $message, $getData['token_device']);
+
+                $this->db->table('orang_tua_notifikasi')->insert([
+                    'id_orang_tua' => $getData['id_orang_tua'],
+                    'nisn' => $getData['nisn'],
+                    'title' => 'SDIT Bombang Talluna Bira',
+                    'body' => $message,
+                ]);
+
+                return $respon;
+            }
+
+            return 'Token Device Null';
+        } catch (\Exception $e) {
+            throw $e;
+            echo $e->getMessage() . "<br>";
+            echo $respon;
+        }
+    }
+
+    function sendMessage($message)
+    {
+        $serviceAccountPath = realpath(WRITEPATH . 'app-monitor-hafalan-alquran-7b090d6c1b06.json');
+        $client = new Client();
+        $client->setAuthConfig($serviceAccountPath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $client->fetchAccessTokenWithAssertion();
+
+        $accessToken = $client->getAccessToken();
+
+        $httpClient = new GuzzleClient(['base_uri' => 'https://fcm.googleapis.com']);
+        $response = $httpClient->request('POST', '/v1/projects/app-monitor-hafalan-alquran/messages:send', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $message
+        ]);
+
+        return $response->getBody()->getContents();
+    }
+
+    public function send_notifikasi(String $text, String $body, String $token)
+    {
+        $message = [
+            'message' => [
+                'token' => $token,
+                'notification' => [
+                    'title' => $text,
+                    'body' => $body
+                ],
+            ]
+        ];
+
+        try {
+            $result = $this->sendMessage($message);
+            return "Message sent successfully: " . $result;
+        } catch (\Exception $e) {
+            echo "Failed to send message: " . $e->getMessage();
+        }
+    }
+
+    public function test_notifikasi()
+    {
+        $message = [
+            'message' => [
+                'token' => $this->request->getPost('token_device'),
+                'notification' => [
+                    'title' => $this->request->getPost('title'),
+                    'body' => $this->request->getPost('body')
+                ],
+            ]
+        ];
+
+        try {
+            $result = $this->sendMessage($message);
+            return "Message sent successfully: " . $result;
+        } catch (\Exception $e) {
+            echo "Failed to send message: " . $e->getMessage();
+        }
     }
 
     public function hafalan_detail($id)
@@ -213,6 +514,18 @@ class GuruController extends BaseController
             'data' => $this->db->table('hafalan')->where('id_siswa', $id)->get()->getResultArray(),
             'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray()
+        ]);
+    }
+
+    public function hafalan_siswa_detail($id)
+    {
+        return view('guru/hafalan_siswa_detail', [
+            'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
+            'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
+            'maxData' => $this->db->query('SELECT GREATEST((SELECT COUNT(*) FROM tahsin),(SELECT COUNT(*) FROM murojaah),(SELECT COUNT(*) FROM hafalan_baru)) as max_rows')->getRowArray(),
+            'dataTahsin' => $this->db->table('tahsin')->where('id_siswa', $id)->get()->getResultArray(),
+            'dataMurojaah' => $this->db->table('murojaah')->where('id_siswa', $id)->get()->getResultArray(),
+            'dataHafalanBaru' => $this->db->table('hafalan_baru')->where('id_siswa', $id)->get()->getResultArray()
         ]);
     }
 
@@ -248,6 +561,63 @@ class GuruController extends BaseController
     public function hafalan_($id)
     {
         return $this->response->setJSON($this->db->table('hafalan')->where('id_siswa', $id)->get()->getResultArray());
+    }
+
+    public function hafalan_siswa_($id)
+    {
+        $getTahsin = $this->db->table('tahsin')->where('id_siswa', $id)->get()->getResultArray();
+        $getMurojaah = $this->db->table('murojaah')->where('id_siswa', $id)->get()->getResultArray();
+        $getHafalanBaru = $this->db->table('hafalan_baru')->where('id_siswa', $id)->get()->getResultArray();
+        $maxData = $this->db->query('SELECT GREATEST((SELECT COUNT(*) FROM tahsin),(SELECT COUNT(*) FROM murojaah),(SELECT COUNT(*) FROM hafalan_baru)) as max_rows')->getRowArray();
+
+        $data = [];
+
+        for ($i = 0; $i < $maxData['max_rows']; $i++) {
+            $data[$i] = [
+                'tanggal_tahsin' => $getTahsin[$i]['tanggal_tahsin'] ?? '',
+                'halaman_tahsin' => $getTahsin[$i]['halaman'] ?? '',
+                'jilid_tahsin' => $getTahsin[$i]['jilid'] ?? '',
+                'keterangan_tahsin' => $getTahsin[$i]['keterangan'] ?? '',
+                'tanggal_murojaah' => $getMurojaah[$i]['tanggal_murojaah'] ?? '',
+                'surah_murojaah' => $getMurojaah[$i]['surah'] ?? '',
+                'ayat_murojaah' => $getMurojaah[$i]['ayat'] ?? '',
+                'keterangan_murojaah' => $getMurojaah[$i]['keterangan'] ?? '',
+                'tanggal_hafalan_baru' => $getHafalanBaru[$i]['tanggal_hafalan_baru'] ?? '',
+                'surah_hafalan_baru' => $getHafalanBaru[$i]['surah'] ?? '',
+                'ayat_hafalan_baru' => $getHafalanBaru[$i]['ayat'] ?? '',
+                'keterangan_hafalan_baru' => $getHafalanBaru[$i]['keterangan'] ?? '',
+                'id_tahsin' => $getTahsin[$i]['id_tahsin'] ?? '',
+                'id_murojaah' => $getMurojaah[$i]['id_murojaah'] ?? '',
+                'id_hafalan_baru' => $getHafalanBaru[$i]['id_hafalan_baru'] ?? ''
+            ];
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function hafalan_siswa_delete($type, $id)
+    {
+        switch ($type) {
+            case 'Tahsin':
+                $query = $this->db->table('tahsin')->where('id_tahsin', $id);
+                break;
+
+            case 'Murojaah':
+                $query = $this->db->table('murojaah')->where('id_murojaah', $id);
+                break;
+
+            case 'HafalanBaru':
+                $query = $this->db->table('hafalan_baru')->where('id_hafalan_baru', $id);
+                break;
+
+            default:
+                $query = $this->db->table('tahsin')->where('id_tahsin', $id);
+                break;
+        }
+
+        $query->delete();
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Data hafalan berhasil dihapus');
     }
 
     public function hafalan_delete($id)
@@ -550,11 +920,11 @@ class GuruController extends BaseController
 
         $getKelas = $this->db->table('kelas')->select('id_kelas, semester, tahun_ajaran, nama_kelas')->where('id_kelas', $getSiswa['id_kelas'])->get()->getRowArray();
 
-        $getTotalSakit = $this->db->table('absensi')->select('SUM(keterangan) as total_sakit')->where('keterangan', 'Sakit')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalSakit = $this->db->table('absensi')->where('keterangan', 'Sakit')->where('id_siswa', $getSiswa['id_siswa'])->get()->getResultArray();
 
-        $getTotalIzin = $this->db->table('absensi')->select('SUM(keterangan) as total_izin')->where('keterangan', 'Izin')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalIzin = $this->db->table('absensi')->where('keterangan', 'Izin')->where('id_siswa', $getSiswa['id_siswa'])->get()->getResultArray();
 
-        $getTotalAlfa = $this->db->table('absensi')->select('SUM(keterangan) as total_alfa')->where('keterangan', 'Alpa')->where('id_siswa', $getSiswa['id_siswa'])->get()->getRowArray();
+        $getTotalAlfa = $this->db->table('absensi')->where('keterangan', 'Alpa')->where('id_siswa', $getSiswa['id_siswa'])->get()->getResultArray();
 
         $data = [
             'id_siswa' => $this->request->getPost('id_siswa'),
@@ -572,9 +942,9 @@ class GuruController extends BaseController
             'nilai_uts' => $this->request->getPost('nilai_uts'),
             'nilai_tahsin' => $this->request->getPost('nilai_tahsin'),
             'keterangan_tambahan' => $this->request->getPost('keterangan'),
-            'sakit' => $getTotalSakit['total_sakit'] ?? 0,
-            'izin' => $getTotalIzin['total_izin'] ?? 0,
-            'alpa' => $getTotalAlfa['total_alfa'] ?? 0,
+            'sakit' => count($getTotalSakit),
+            'izin' => count($getTotalIzin),
+            'alpa' => count($getTotalAlfa),
             'id_rekap_nilai' => 0
         ];
 

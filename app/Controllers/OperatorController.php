@@ -25,10 +25,11 @@ class OperatorController extends BaseController
     {
         $rules = [
             'id_unique_guru' => [
-                'rules' => 'required|is_unique[guru.id_unique_guru]',
+                'rules' => 'required|is_unique[guru.id_unique_guru]|max_length[12]',
                 'errors' => [
                     'required' => 'ID Guru tidak boleh kosong',
-                    'is_unique' => 'ID Guru sudah terdaftar'
+                    'is_unique' => 'ID Guru sudah terdaftar',
+                    'max_length' => 'ID Guru tidak boleh lebih dari 12 karakter'
                 ]
             ],
             'nama_guru' => [
@@ -66,10 +67,11 @@ class OperatorController extends BaseController
                 'rules' => 'required',
             ],
             'id_unique_guru' => [
-                'rules' => 'required|is_unique[guru.id_unique_guru, id_guru, {id_guru}]',
+                'rules' => 'required|is_unique[guru.id_unique_guru, id_guru, {id_guru}]|max_length[12]',
                 'errors' => [
                     'required' => 'ID Guru tidak boleh kosong',
-                    'is_unique' => 'ID Guru sudah terdaftar'
+                    'is_unique' => 'ID Guru sudah terdaftar',
+                    'max_length' => 'ID Guru tidak boleh lebih dari 12 karakter'
                 ]
             ],
             'nama_guru' => [

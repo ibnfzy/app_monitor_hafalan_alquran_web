@@ -21,7 +21,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 7',
             'keterangan' => 'hafal',
             'jilid' => 'fasih',
-            'murojaah' => 0
+            'murojaah' => 0,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -33,7 +34,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 5',
             'keterangan' => 'hafal',
             'jilid' => 'fasih',
-            'murojaah' => 0
+            'murojaah' => 0,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -45,7 +47,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 11',
             'keterangan' => 'belum hafal',
             'jilid' => 'belum',
-            'murojaah' => 1
+            'murojaah' => 1,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -57,7 +60,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 11',
             'keterangan' => 'belum hafal',
             'jilid' => 'fasih',
-            'murojaah' => 1
+            'murojaah' => 1,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -69,7 +73,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 46',
             'keterangan' => 'belum hafal',
             'jilid' => 'belum',
-            'murojaah' => 1
+            'murojaah' => 1,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -81,7 +86,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 11',
             'keterangan' => 'hafal',
             'jilid' => 'fasih',
-            'murojaah' => 0
+            'murojaah' => 0,
+            'halaman' => 'adasd'
         ]);
 
         $this->db->table('hafalan')->insert([
@@ -93,7 +99,8 @@ class Hafalan extends Seeder
             'ayat' => '1 - 46',
             'keterangan' => 'hafal',
             'jilid' => 'fasih',
-            'murojaah' => 0
+            'murojaah' => 0,
+            'halaman' => 'adasd'
         ]);
     }
 }

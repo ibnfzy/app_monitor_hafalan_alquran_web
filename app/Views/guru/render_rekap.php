@@ -314,7 +314,7 @@
   doc.setFont('helvetica', 'normal')
   doc.text('Musyrifah Tahfidz', 28, doc.lastAutoTable.finalY + 40, 'left');
   doc.setFont('helvetica', 'bold')
-  doc.text('Siti Raoda, S.Pd', 27, doc.lastAutoTable.finalY + 55, 'left');
+  doc.text('<?= $nama_guru; ?>', 27, doc.lastAutoTable.finalY + 55, 'left');
   let textWidth = doc.getTextWidth('Siti Raoda, S.Pd');
   doc.line(27, doc.lastAutoTable.finalY + 57, 27 + textWidth, doc.lastAutoTable.finalY + 57);
 

@@ -9,7 +9,8 @@ $db = db_connect();
 <div class="container-fluid px-4">
   <h1 class="mt-4 text-white">Panel Guru</h1>
   <ol class="breadcrumb mb-4 btn-group col-4">
-    <button class="btn btn-primary shadow-lg" onclick="editBiodata('<?= $dataGuru['nama_guru'] ?>', '<?= $dataGuru['kontak']; ?>')">Edit
+    <button class="btn btn-primary shadow-lg"
+      onclick="editBiodata('<?= $dataGuru['nama_guru'] ?>', '<?= $dataGuru['kontak']; ?>')">Edit
       Biodata</button>
     <button class="btn btn-primary shadow-lg" data-bs-toggle="modal" data-bs-target="#photo">Ubah Foto</button>
     <button class="btn btn-primary shadow-lg" data-bs-toggle="modal" data-bs-target="#password">Ubah Pasword</button>
@@ -20,7 +21,8 @@ $db = db_connect();
         <div class="card card-primary card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/<?= $dataGuru['gambar'] ?>" alt="User profile picture">
+              <img width="100" class="profile-user-img img-fluid img-circle" src="/uploads/<?= $dataGuru['gambar'] ?>"
+                alt="User profile picture">
             </div>
 
             <h3 class="profile-username text-center"><?= $dataGuru['nama_guru']; ?></h3>
@@ -77,18 +79,22 @@ $db = db_connect();
             </thead>
             <tbody>
               <?php foreach ($data as $key => $item) : ?>
-                <?php $getJumlahMurid = $db->table('siswa')->where('id_halaqoh', $item['id_halaqoh'])->get()->getResultArray(); ?>
-                <tr>
-                  <td><?= $key + 1; ?></td>
-                  <td><?= $item['halaqoh'] ?></td>
-                  <td><?= count($getJumlahMurid) ?></td>
-                  <td>
-                    <div class="btn-group">
+              <?php $getJumlahMurid = $db->table('siswa')->where('id_halaqoh', $item['id_halaqoh'])->get()->getResultArray(); ?>
+              <tr>
+                <td><?= $key + 1; ?></td>
+                <td><?= $item['halaqoh'] ?></td>
+                <td><?= count($getJumlahMurid) ?></td>
+                <td>
+                  <div class="btn-group">
+                    <a href="/GuruPanel/HafalanSiswa/<?= $item['id_halaqoh'] ?>" class="btn btn-danger">Hafalan</a>
+                    <a href="/GuruPanel/Absensi/<?= $item['id_halaqoh'] ?>" class="btn btn-primary">Absensi</a>
+                  </div>
+
+                  <!-- <div class="btn-group">
                       <a href="/GuruPanel/<?= $item['id_halaqoh'] ?>" class="btn btn-primary">Hafalan</a>
-                      <a href="/GuruPanel/Absensi/<?= $item['id_halaqoh'] ?>" class="btn btn-primary">Absensi</a>
-                    </div>
-                  </td>
-                </tr>
+                    </div> -->
+                </td>
+              </tr>
               <?php endforeach ?>
             </tbody>
           </table>
@@ -176,11 +182,11 @@ $db = db_connect();
 <?= $this->section('script'); ?>
 
 <script>
-  const editBiodata = (nama_guru, kontak) => {
-    $('#nama_guru-edit').val(nama_guru)
-    $('#kontak-edit').val(kontak)
-    $('#edit_biodata').modal('show')
-  };
+const editBiodata = (nama_guru, kontak) => {
+  $('#nama_guru-edit').val(nama_guru)
+  $('#kontak-edit').val(kontak)
+  $('#edit_biodata').modal('show')
+};
 </script>
 
 <?= $this->endSection(); ?>

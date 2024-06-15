@@ -18,8 +18,7 @@
 
 <body class="sb-nav-fixed" id="root">
   <?= $this->include('guru/layouts/navbar'); ?>
-  <div id="layoutSidenav"
-    style="background: url('<?= base_url('bg.jpg') ?>') center center/cover no-repeat fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+  <div id="layoutSidenav" style="background: url('<?= base_url('bg.jpg') ?>') center center/cover no-repeat fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
     <?= $this->include('guru/layouts/sidebar'); ?>
     <div id="layoutSidenav_content">
       <main>
@@ -49,47 +48,59 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
   <script type="text/javascript">
-  let table = new DataTable('#datatables');
-  $('.select2-chart').select2({
-    dropdownParent: $('#surahParent'),
-    // theme: 'bootstrap-5',
-    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
-    placeholder: $(this).data('placeholder'),
-  });
+    let table = new DataTable('#datatables');
+    $('.select2-chart').select2({
+      dropdownParent: $('#surahParent'),
+      // theme: 'bootstrap-5',
+      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
+      placeholder: $(this).data('placeholder'),
+    });
 
-  $('.select2-siswa').select2({
-    dropdownParent: $('#siswaParent'),
-    // theme: 'bootstrap-5',
-    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
-    placeholder: $(this).data('placeholder'),
-  });
+    $('.select2-siswa').select2({
+      dropdownParent: $('#siswaParent'),
+      // theme: 'bootstrap-5',
+      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
+      placeholder: $(this).data('placeholder'),
+    });
+
+    $('#select2-murojaah').select2({
+      dropdownParent: $('#murojaahParent'),
+      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
+      placeholder: $(this).data('placeholder'),
+    });
+
+    $('#select2-hafalan-baru').select2({
+      dropdownParent: $('#hafalanBaruParent'),
+      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('col-12') ? '100%' : 'style',
+      placeholder: $(this).data('placeholder'),
+    });
 
 
-  // $(document).ready(function() {
-  //   
-  // });
+    // $(document).ready(function() {
+    //   
+    // });
   </script>
 
   <?= $this->renderSection('script'); ?>
 
   <script>
-  toastr.options = {
-    "closeButton": true,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": true,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": true,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "5000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": true,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
   </script>
 
   <?php

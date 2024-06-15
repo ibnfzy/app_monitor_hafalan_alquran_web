@@ -5,12 +5,12 @@ namespace App\Database\Migrations;
 use CodeIgniter\Database\Migration;
 use CodeIgniter\Database\RawSql;
 
-class Hafalan extends Migration
+class Tahsin extends Migration
 {
     public function up()
     {
         $this->forge->addField([
-            'id_hafalan' => [
+            'id_tahsin' => [
                 'type' => 'INT',
                 'auto_increment' => true
             ],
@@ -24,46 +24,33 @@ class Hafalan extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 10
             ],
-            'id_surah' => [
-                'type' => 'INT',
-            ],
-            'nama_surah' => [
+            'halaman' => [
                 'type' => 'VARCHAR',
                 'constraint' => 250
             ],
-            'ayat' => [
+            'jilid' => [
                 'type' => 'VARCHAR',
-                'constraint' => 250,
-                'null' => true
-            ],
-            'tanggal_input' => [
-                'type' => 'date',
-                'default' => new RawSql('(CURRENT_DATE)')
+                'constraint' => 250
             ],
             'keterangan' => [
                 'type' => 'VARCHAR',
                 'constraint' => 250
             ],
-            'jilid' => [
-                'type' => 'TEXT',
+            'tanggal_tahsin' => [
+                'type' => 'DATE'
             ],
-            'murojaah' => [
-                'type' => 'VARCHAR',
-                'constraint' => 1
-            ],
-            'halaman' => [
-                'type' => 'VARCHAR',
-                'constraint' => 250
+            'created_at' => [
+                'type' => 'TIMESTAMP',
+                'default' => new RawSql('(CURRENT_TIMESTAMP)')
             ]
         ]);
 
-        $this->forge->addKey('id_hafalan', true);
-
-        $this->forge->createTable('hafalan');
+        $this->forge->addKey('id_tahsin', true);
+        $this->forge->createTable('tahsin');
     }
 
     public function down()
     {
-        $this->forge->dropTable('hafalan');
+        $this->forge->dropTable('tahsin');
     }
 }

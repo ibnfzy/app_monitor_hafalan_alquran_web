@@ -63,7 +63,7 @@
         <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Tambah Hafalan</h1>
         <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/GuruPanel" method="post" enctype="multipart/form-data" target="_blank" onsubmit="$('#tambah_hafalan').modal('hide');">
+      <form action="/GuruPanel" method="post" enctype="multipart/form-data" target="_blank" id="formKu">
         <input type="hidden" name="id_siswa" id="id_siswa">
         <input type="hidden" name="nisn_siswa" id="nisn_siswa">
         <div class="modal-body">
@@ -93,15 +93,31 @@
           <div class="mb-3">
             <label for="keterangan">Keterangan</label>
             <select name="keterangan" id="keterangan" class="form-control">
-              <option value="hafal">Hafal dan Fasih</option>
-              <option value="fasih">Fasih, Belum Hafal (Muroja'ah)</option>
-              <option value="belum">Belum Fasih, Belum Hafal (Muroja'ah)</option>
+              <option value="hafal">Hafal</option>
+              <option value="belum hafal">Belum Hafal</option>
             </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="jilid">Jilid</label>
+            <input type="text" class="form-control" id="jilid" name="jilid">
+          </div>
+
+          <div class="mb-3">
+            <label for="halaman">Halaman</label>
+            <input type="text" class="form-control" id="halaman" name="halaman">
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="murojaah">
+            <label class="form-check-label" for="flexCheckDefault">
+              Muroja'ah
+            </label>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success">Save changes</button>
+          <button type="submit" class="btn btn-success">Proses</button>
         </div>
       </form>
     </div>
@@ -121,7 +137,7 @@
             <tr>
               <th rowspan="2">No</th>
               <th colspan="3">Tahsin</th>
-              <th>Muroja'ah</th>
+              <th colspan="3">Muroja'ah</th>
               <th colspan="3">Hafalan Baru</th>
               <th rowspan="2">Aksi</th>
             </tr>
@@ -130,6 +146,8 @@
               <th>Halaman</th>
               <th>Jilid</th>
               <th>Surah</th>
+              <th>Ayat</th>
+              <th>Keterangan</th>
               <th>Surah</th>
               <th>Ayat</th>
               <th>Keterangan</th>
@@ -152,6 +170,21 @@
 <?= $this->section('script'); ?>
 
 <script>
+  $(document).ready(function() {
+    $('#formKu').submit(function(event) {
+      // $('#tambah_hafalan').modal('hide');
+      // $(this).find('input[type="text"]').val('');
+      let waktu = 3;
+      let intervalId = setInterval(function() {
+        waktu--;
+        if (waktu < 0) {
+          clearInterval(intervalId);
+          window.location.reload(); // Refresh halaman
+        }
+      }, 1000);
+    });
+  });
+
   const detailHafalan = (id_siswa, nama_siswa) => {
     $('#detailLabel').text('Detail Hafalan ' + nama_siswa);
     $.ajax({
@@ -162,15 +195,16 @@
         $('#tbody-detail').empty();
         if (data.length > 0) {
           $.each(data, function(index, item) {
+            const data = '<td>' + item.nama_surah + '</td>' +
+              '<td>' + item.halaman + '</td>' +
+              '<td>' + item.keterangan + '</td>';
             $('#tbody-detail').append('<tr>' +
               '<td>' + (index + 1) + '</td>' +
               '<td>' + item.tanggal_input + '</td>' +
               '<td>' + item.ayat + '</td>' +
               '<td>' + item.jilid + '</td>' +
-              '<td>' + (item.murojaah == 1 ? item.nama_surah : '') + '</td>' +
-              '<td>' + item.nama_surah + '</td>' +
-              '<td>' + item.ayat + '</td>' +
-              '<td>' + item.keterangan + '</td>' +
+              (item.murojaah == 1 ? data : '<td></td><td></td><td></td>') +
+              (item.murojaah == 0 ? data : '<td></td><td></td><td></td>') +
               '<td>' + '<a class="btn btn-danger" href="/GuruPanel/Hafalan/Delete/' + item.id_hafalan +
               '">Hapus</a>' + '</td>' +
               '</tr>');

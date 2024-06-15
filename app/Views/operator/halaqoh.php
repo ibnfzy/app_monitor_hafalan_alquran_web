@@ -25,7 +25,7 @@
             <td><?= $item['halaqoh'] ?></td>
             <td><?= $item['nama_guru'] ?></td>
             <td>
-              <button onclick="edit(<?= $item['id_halaqoh'] ?>, '<?= $item['halaqoh'] ?>', '<?= $item['id_guru'] ?>')"
+              <button onclick="edit(<?= $item['id_halaqoh'] ?>, `<?= $item['halaqoh'] ?>`, '<?= $item['id_guru'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Halaqoh/<?= $item['id_halaqoh'] ?>" class="btn btn-danger">Delete</a>
             </td>

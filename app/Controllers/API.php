@@ -44,12 +44,11 @@ class API extends BaseController
             'message' => 'Success',
             'data' => [
                 'siswa' => $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('nisn', $nisn)->get()->getRowArray(),
-                'total_hafalan_berhasil' => $this->db->table('hafalan')->where('nisn', $nisn)->where('keterangan', 'lulus')->countAllResults(),
+                'total_hafalan_berhasil' => $this->db->table('hafalan')->where('nisn', $nisn)->where('keterangan', 'hafal')->countAllResults(),
                 'total_kehadiran' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Hadir')->countAllResults(),
                 'total_alfa' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Alpa')->countAllResults(),
                 'total_izin' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Izin')->countAllResults(),
                 'total_sakit' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Sakit')->countAllResults(),
-                'total_tanpa_keterangan' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Tanpa Keterangan')->countAllResults()
             ]
         ]);
     }
@@ -106,6 +105,30 @@ class API extends BaseController
             'message' => 'Success',
             'data' => [
                 'rekap_nilai' => $this->db->table('rekap_nilai')->where('id_siswa', $getSiswa['id_siswa'])->orderBy('id_rekap_nilai', 'DESC')->get()->getResultArray()
+            ]
+        ]);
+    }
+
+    public function save_token_device()
+    {
+        $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([
+            'token_device' => $this->request->getPost('token')
+        ]);
+
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Success',
+            'data' => []
+        ]);
+    }
+
+    public function show_all_notifikasi($nisn)
+    {
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Success',
+            'data' => [
+                'notifikasi' => $this->db->table('notifikasi')->where('nisn', $nisn)->orderBy('id_notifikasi', 'DESC')->get()->getResultArray()
             ]
         ]);
     }
