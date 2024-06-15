@@ -128,4 +128,4 @@ nb-configuration.xml
 
 update_note.txt
 vendor.zip
-writable/app-monitor-hafalan-alquran-*.json
+writable/*.json
