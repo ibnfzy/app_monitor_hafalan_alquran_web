@@ -13,6 +13,7 @@ class Siswa extends Seeder
 
         for ($i = 0; $i < 200; $i++) {
             $nisn = rand(1000000000, 9999999999);
+            $nik = rand(1000000000, 9999999999);
 
             $data = [
                 'id_kelas' => rand(1, 2), // Ganti 10 dengan jumlah kelas yang tersedia
@@ -25,11 +26,13 @@ class Siswa extends Seeder
             $dataOrangTua = [
                 'nisn_anak' => $nisn,
                 'nama_orang_tua' => $faker->firstName(),
-                'password' => password_hash('123456', PASSWORD_DEFAULT)
+                'password' => password_hash('123456', PASSWORD_DEFAULT),
+                'is_valid' => 1,
+                'nik' => $nik
             ];
 
             $this->db->table('siswa')->insert($data);
-            $this->db->table('orang_tua')->insert($dataOrangTua);
+            // $this->db->table('orang_tua')->insert($dataOrangTua);
         }
     }
 }

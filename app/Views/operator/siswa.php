@@ -18,7 +18,9 @@
             <th>Guru</th>
             <th>Kelas</th>
             <th>Halaqoh</th>
+            <th>NIK Orang Tua</th>
             <th>Nama Orang Tua</th>
+            <th>Status Akun Orang Tua</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -31,10 +33,20 @@
             <td><?= $item['nama_guru']; ?></td>
             <td><?= $item['kelas'] ?></td>
             <td><?= $item['halaqoh'] ?></td>
+            <td><?= $item['nik'] ?></td>
             <td><?= $item['nama_orang_tua'] ?></td>
             <td>
+              <?php if ($item['is_valid'] == 1) : ?>
+              <span class="badge text-bg-success">Aktif</span>
+              <?php elseif ($item['is_valid'] == null) : ?>
+              <span class="badge text-bg-warning">Belum Daftar</span>
+              <?php else : ?>
+              <span class="badge text-bg-danger">Belum Validasi</span>
+              <?php endif ?>
+            </td>
+            <td>
               <button
-                onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['id_halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>')"
+                onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['id_halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>', '<?= $item['nik'] ?>', '<?= $item['is_valid'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Siswa/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
             </td>
@@ -62,7 +74,8 @@
           </div>
           <div class="mb-3">
             <label for="nisn" class="form-label">NISN</label>
-            <input type="text" class="form-control" id="nisn" name="nisn" required>
+            <input type="text" class="form-control" id="nisn" name="nisn" data-inputmask="'mask': '9999999999'"
+              required>
           </div>
           <div class="mb-3">
             <label for="id_kelas">KELAS</label>
@@ -83,20 +96,6 @@
               <option value="<?= $item['id_halaqoh']; ?>"><?= $item['halaqoh']; ?></option>
               <?php endforeach ?>
             </select>
-          </div>
-          <hr>
-          <div class="mb-3">
-            <label for="nama_orang_tua">Nama Orang Tua</label>
-            <input type="text" class="form-control" id="nama_orang_tua" name="nama_orang_tua" required>
-          </div>
-          <div class="mb-3">
-            <label for="pasword">Password </label>
-            <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
-          </div>
-          <div class="mb-3">
-            <label for="konfirmasi_password">Konfirmasi Password</label>
-            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password"
-              placeholder="Konfirmasi Password" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -124,7 +123,7 @@
           </div>
           <div class="mb-3">
             <label for="nisn" class="form-label">NISN</label>
-            <input type="nisn" class="form-control" id="nisn-edit" name="nisn">
+            <input type="nisn" class="form-control" id="nisn-edit" name="nisn" data-inputmask="'mask': '9999999999'">
           </div>
           <div class="mb-3">
             <label for="id_kelas">KELAS</label>
@@ -148,18 +147,29 @@
             </select>
           </div>
           <hr>
-          <div class="mb-3">
-            <label for="nama_orang_tua">Nama Orang Tua</label>
-            <input type="text" class="form-control" id="nama_orang_tua-edit" name="nama_orang_tua" required>
+          <div id="dataOrangTua">
+            <div class="mb-3">
+              <label for="nama_orang_tua" class="form-label">Nama Orang Tua</label>
+              <input type="text" class="form-control" id="nama_orang_tua-edit" name="nama_orang_tua">
+            </div>
+            <div class="mb-3">
+              <label for="nik" class="form-label">NIK</label>
+              <input type="text" class="form-control" id="nik-edit" name="nik"
+                data-inputmask="'mask': '9999999999999999'">
+            </div>
+            <div class="mb-3">
+              <label for="validasi" class="form-label">Status Akun</label>
+              <select name="is_valid" id="is_valid-edit" class="form-control">
+                <option value="1">Aktif</option>
+                <option value="0">Tidak Aktif</option>
+              </select>
+            </div>
+            <hr>
           </div>
           <div class="mb-3">
-            <label for="pasword">Password <span class="text-danger">*Kosongkan jika tidak ingin diganti</span></label>
-            <input class="form-control" type="password" name="password" placeholder="Password Baru" id="password-edit">
-          </div>
-          <div class="mb-3">
-            <label for="konfirmasi_password">Konfirmasi Password</label>
-            <input class="form-control" type="password" name="password_confirm" id="konfirmasi_password-edit"
-              placeholder="Konfirmasi Password Baru">
+            <label for="inputPassword" class="form-label">Password Baru</label>
+            <input type="password" class="form-control" id="inputPassword-edit" name="password_baru"
+              autocomplete="new-password">
           </div>
         </div>
         <div class="modal-footer">
@@ -176,7 +186,9 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua) => {
+$(":input").inputmask();
+
+const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid) => {
   $('#id_siswa-edit').val(id)
   $('#nama_siswa-edit').val(nama_siswa)
   $('#nisn-edit').val(nisn)
@@ -191,6 +203,21 @@ const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua) => {
     }
   });
   $('#nama_orang_tua-edit').val(nama_orang_tua)
+  $('#nik-edit').val(nik)
+  $('#is_valid-edit option').each(function() {
+    if ($(this).val() == is_valid) {
+      $(this).attr('selected', '');
+    }
+  })
+
+  console.log(id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid);
+
+  if (nama_orang_tua == '') {
+    $('#dataOrangTua').attr('hidden', 'hidden');
+  } else {
+    $('#dataOrangTua').removeAttr('hidden');
+  }
+
   $('#edit').modal('show')
 }
 </script>

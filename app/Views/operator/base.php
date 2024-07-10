@@ -44,40 +44,43 @@
   <script src="<?= base_url(); ?>jspdf/dist/jspdf.plugin.autotable.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js'
+    integrity='sha512-F5Ul1uuyFlGnIT1dk2c4kB4DBdi5wnBJjVhL7gQlGh46Xn0VhvD8kgxLtjdZ5YN83gybk/aASUAlpdoWUjRR3g=='
+    crossorigin='anonymous'></script>
   <script src="<?= base_url() ?>panel/js/scripts.js"></script>
 
   <script type="text/javascript">
-    new DataTable('#datatables');
-    // $(document).ready(function() {
-    //   $('#select2').select2({
-    //     dropdownParent: $('#dataBarang'),
-    //     // theme: 'bootstrap-5'
-    //     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-    //     placeholder: $(this).data('placeholder'),
-    //   });
-    // });
+  new DataTable('#datatables');
+  // $(document).ready(function() {
+  //   $('#select2').select2({
+  //     dropdownParent: $('#dataBarang'),
+  //     // theme: 'bootstrap-5'
+  //     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+  //     placeholder: $(this).data('placeholder'),
+  //   });
+  // });
   </script>
 
   <?= $this->renderSection('script'); ?>
 
   <script>
-    toastr.options = {
-      "closeButton": true,
-      "debug": false,
-      "newestOnTop": true,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": true,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "5000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
+  toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
   </script>
 
   <?php

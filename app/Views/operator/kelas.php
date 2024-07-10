@@ -21,18 +21,16 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td><?= $item['nama_kelas'] ?></td>
-            <td><?= $item['tahun_ajaran'] ?></td>
-            <td><?= $item['semester'] ?></td>
-            <td>
-              <button
-                onclick="edit(<?= $item['id_kelas'] ?>, '<?= $item['nama_kelas'] ?>', '<?= $item['tahun_ajaran'] ?>', '<?= $item['semester'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Kelas/<?= $item['id_kelas'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td><?= $item['nama_kelas'] ?></td>
+              <td><?= $item['tahun_ajaran'] ?></td>
+              <td><?= $item['semester'] ?></td>
+              <td>
+                <button onclick="edit(<?= $item['id_kelas'] ?>, '<?= $item['nama_kelas'] ?>', '<?= $item['tahun_ajaran'] ?>', '<?= $item['semester'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Kelas/<?= $item['id_kelas'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -56,7 +54,9 @@
           </div>
           <div class="mb-3">
             <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
-            <input type="text" class="form-control" id="tahun_ajaran" name="tahun_ajaran">
+            <select name="tahun_ajaran" id="tahun_ajaran" class="form-control">
+
+            </select>
           </div>
           <div class="mb-3">
             <label for="semester" class="form-label">Semester</label>
@@ -90,11 +90,14 @@
           </div>
           <div class="mb-3">
             <label for="tahun_ajaran-edit" class="form-label">Tahun Ajaran</label>
-            <input type="text" class="form-control" id="tahun_ajaran-edit" name="tahun_ajaran">
+            <select name="tahun_ajaran" id="tahun_ajaran-edit" class="form-control"></select>
           </div>
           <div class="mb-3">
             <label for="semester-edit" class="form-label">Semester</label>
-            <input type="text" class="form-control" id="semester-edit" name="semester">
+            <select name="semester" id="semester-edit" class="form-control">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
@@ -111,13 +114,22 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, nama_kelas, tahun_ajaran, semester) => {
-  $('#id_kelas-edit').val(id)
-  $('#nama_kelas-edit').val(nama_kelas)
-  $('#tahun_ajaran-edit').val(tahun_ajaran)
-  $('#semester-edit').val(semester)
-  $('#edit').modal('show')
-}
+  const edit = (id, nama_kelas, tahun_ajaran, semester) => {
+    $('#id_kelas-edit').val(id)
+    $('#nama_kelas-edit').val(nama_kelas)
+    $('#tahun_ajaran-edit').val(tahun_ajaran)
+    $('#semester-edit').val(semester)
+    $('#edit').modal('show')
+  };
+
+  const yearNow = new Date().getFullYear();
+  const yearNext = yearNow + 1;
+  const options = [];
+  for (let i = yearNow - 3; i <= yearNow + 3; i++) {
+    options.push(`<option value="${i}/${i + 1}">${i}/${i + 1}</option>`);
+  }
+  document.getElementById('tahun_ajaran-edit').innerHTML = options.join('');
+  document.getElementById('tahun_ajaran').innerHTML = options.join('');
 </script>
 
 <?= $this->endSection(); ?>

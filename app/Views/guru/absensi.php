@@ -5,9 +5,10 @@
 <?php $db = db_connect(); ?>
 
 <div class="container-fluid px-4">
-  <h1 class="mt-4 text-white">Halaqoh <?= $dataHalaqoh['halaqoh']; ?> | Halaman Hafalan</h1>
+  <h1 class="mt-4 text-white">Halaqoh <?= $dataHalaqoh['halaqoh']; ?> | Halaman Absensi</h1>
   <ol class="breadcrumb mb-4">
-    <button class="btn btn-primary" onclick="history.back()">Kembali</button>
+    <button class="btn btn-primary mx-1" onclick="history.back()">Kembali</button>
+    <a href="/GuruPanel/HafalanSiswa/<?= $dataHalaqoh['id_halaqoh'] ?>" class="btn btn-danger mx-1">Hafalan</a>
   </ol>
   <div class="card mb-4">
     <div class="card-body">
@@ -36,13 +37,13 @@
           ]; ?>
 
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $key + 1; ?></td>
-            <td><?= $item['nisn'] ?></td>
-            <td><?= $item['nama_siswa'] ?></td>
-            <td><?= $item['kelas'] ?></td>
-            <td>
-              <?php
+            <tr>
+              <td><?= $key + 1; ?></td>
+              <td><?= $item['nisn'] ?></td>
+              <td><?= $item['nama_siswa'] ?></td>
+              <td><?= $item['kelas'] ?></td>
+              <td>
+                <?php
                 $absensi = $db->table('absensi')
                   ->where('id_siswa', $item['id_siswa'])
                   ->where('tanggal', date('Y-m-d'))
@@ -55,9 +56,9 @@
                   ->get()
                   ->getRow()->id_absensi ?? null;
                 if ($absensi === null) : ?>
-              <button class="btn btn-warning col-12" onclick="absensi('<?= $item['id_siswa'] ?>')">Belum Absen Hari
-                ini</button>
-              <?php else :
+                  <button class="btn btn-warning col-12" onclick="absensi('<?= $item['id_siswa'] ?>')">Belum Absen Hari
+                    ini</button>
+                <?php else :
                   switch ($absensi->keterangan) {
                     case 'Hadir':
                       $class = 'success';
@@ -70,12 +71,11 @@
                       $class = 'danger';
                       break;
                   } ?>
-              <button class="btn btn-<?= $class ?> col-12"
-                onclick="absensi_edit('<?= $item['id_siswa'] ?>', '<?= $id_absensi ?>', '<?= $absensi->keterangan ?>')"><?= ucwords($absensi->keterangan) ?></button>
-              <?php endif ?>
-            </td>
+                  <button class="btn btn-<?= $class ?> col-12" onclick="absensi_edit('<?= $item['id_siswa'] ?>', '<?= $id_absensi ?>', '<?= $absensi->keterangan ?>')"><?= ucwords($absensi->keterangan) ?></button>
+                <?php endif ?>
+              </td>
 
-            <?php
+              <?php
               $hafalan = $db->table('absensi')
                 ->where('id_siswa', $item['id_siswa'])
                 ->where('id_kelas', $item['id_kelas'])
@@ -89,13 +89,12 @@
               }
               ?>
 
-            <td>
-              <a href="/GuruPanel/Absensi/PDF/<?= $item['id_siswa'] ?>" class="btn btn-danger">PDF</a>
-              <button class="btn btn-primary"
-                onclick="absensi_kelola('<?= $item['id_siswa'] ?>', '<?= $item['nama_siswa'] ?>')">Kelola
-                Absensi</button>
-            </td>
-          </tr>
+              <td>
+                <a href="/GuruPanel/Absensi/PDF/<?= $item['id_siswa'] ?>" class="btn btn-danger">PDF</a>
+                <button class="btn btn-primary" onclick="absensi_kelola('<?= $item['id_siswa'] ?>', '<?= $item['nama_siswa'] ?>')">Kelola
+                  Absensi</button>
+              </td>
+            </tr>
           <?php endforeach ?>
 
         </tbody>
@@ -127,8 +126,7 @@
 
           <div class="mb-3">
             <label for="tanggal" class="form-label">Tanggal</label>
-            <input type="date" class="form-control text-bg-secondary" id="tanggal-edit" name="tanggal"
-              value="<?= date('Y-m-d'); ?>" readonly>
+            <input type="date" class="form-control text-bg-secondary" id="tanggal-edit" name="tanggal" value="<?= date('Y-m-d'); ?>" readonly>
           </div>
         </div>
         <div class="modal-footer">
@@ -162,8 +160,7 @@
 
           <div class="mb-3">
             <label for="tanggal" class="form-label">Tanggal</label>
-            <input type="date" class="form-control text-bg-secondary" id="tanggal" name="tanggal"
-              value="<?= date('Y-m-d'); ?>" readonly>
+            <input type="date" class="form-control text-bg-secondary" id="tanggal" name="tanggal" value="<?= date('Y-m-d'); ?>">
           </div>
         </div>
         <div class="modal-footer">
@@ -206,51 +203,51 @@
 <?= $this->section('script'); ?>
 
 <script>
-const absensi_kelola = (id_siswa, nama_siswa) => {
-  $('#titleAbsensiSiswa').text('Absensi ' + nama_siswa)
-  $.ajax({
-    type: "GET",
-    url: "/GuruPanel/Absensi/Detail/" + id_siswa,
-    dataType: "json",
-    success: function(data) {
-      $('#dataAbsensi').empty();
-      if (data.length > 0) {
-        $.each(data, function(index, item) {
-          $('#dataAbsensi').append('<tr>' +
-            '<td>' + (index + 1) + '</td>' +
-            '<td>' + item.tanggal + '</td>' +
-            '<td>' + item.keterangan + '</td>' +
-            '<td>' + '<a class="btn btn-danger" href="/GuruPanel/Absensi/Delete/' + item.id_absensi +
-            '">Hapus</a>' + '</td>' +
-            '</tr>');
-        });
-      } else {
-        $('#dataAbsensi').append('<tr><td colspan="3">DATA KOSONG</td></tr>');
+  const absensi_kelola = (id_siswa, nama_siswa) => {
+    $('#titleAbsensiSiswa').text('Absensi ' + nama_siswa)
+    $.ajax({
+      type: "GET",
+      url: "/GuruPanel/Absensi/Detail/" + id_siswa,
+      dataType: "json",
+      success: function(data) {
+        $('#dataAbsensi').empty();
+        if (data.length > 0) {
+          $.each(data, function(index, item) {
+            $('#dataAbsensi').append('<tr>' +
+              '<td>' + (index + 1) + '</td>' +
+              '<td>' + item.tanggal + '</td>' +
+              '<td>' + item.keterangan + '</td>' +
+              '<td>' + '<a class="btn btn-danger" href="/GuruPanel/Absensi/Delete/' + item.id_absensi +
+              '">Hapus</a>' + '</td>' +
+              '</tr>');
+          });
+        } else {
+          $('#dataAbsensi').append('<tr><td colspan="3">DATA KOSONG</td></tr>');
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("Error: " + errorThrown);
       }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Error: " + errorThrown);
-    }
-  });
+    });
 
-  $('#kelolaAbsensi').modal('show');
-}
+    $('#kelolaAbsensi').modal('show');
+  }
 
-const absensi = (id_siswa) => {
-  $('#id_siswa').val(id_siswa)
-  $('#absensi').modal('show')
-};
+  const absensi = (id_siswa) => {
+    $('#id_siswa').val(id_siswa)
+    $('#absensi').modal('show')
+  };
 
-const absensi_edit = (id_siswa, id_absensi, keterangan) => {
-  $('#id_siswa-edit').val(id_siswa)
-  $('#id_absensi-edit').val(id_absensi)
-  $('#absensis-edit option').each(function() {
-    if ($(this).val() == keterangan) {
-      $(this).attr('selected', 'selected');
-    }
-  });
-  $('#absensi-edit').modal('show')
-};
+  const absensi_edit = (id_siswa, id_absensi, keterangan) => {
+    $('#id_siswa-edit').val(id_siswa)
+    $('#id_absensi-edit').val(id_absensi)
+    $('#absensis-edit option').each(function() {
+      if ($(this).val() == keterangan) {
+        $(this).attr('selected', 'selected');
+      }
+    });
+    $('#absensi-edit').modal('show')
+  };
 </script>
 
 <?= $this->endSection(); ?>

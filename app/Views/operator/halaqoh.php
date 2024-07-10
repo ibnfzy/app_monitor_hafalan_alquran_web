@@ -2,6 +2,8 @@
 
 <?= $this->section('content'); ?>
 
+<?php $db = db_connect(); ?>
+
 <div class="container-fluid px-4">
   <h1 class="mt-4">Tabel Halaqoh</h1>
   <ol class="breadcrumb mb-4">
@@ -15,21 +17,24 @@
             <th>#</th>
             <th>Halaqoh</th>
             <th>Nama Guru</th>
+            <th>Jumlah Siswa</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td><?= $item['halaqoh'] ?></td>
-            <td><?= $item['nama_guru'] ?></td>
-            <td>
-              <button onclick="edit(<?= $item['id_halaqoh'] ?>, `<?= $item['halaqoh'] ?>`, '<?= $item['id_guru'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Halaqoh/<?= $item['id_halaqoh'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td><?= $item['halaqoh'] ?></td>
+              <td><?= $item['nama_guru'] ?></td>
+              <td>
+                <?= $db->table('siswa')->where('id_halaqoh', $item['id_halaqoh'])->countAllResults(); ?>
+              </td>
+              <td>
+                <button onclick="edit(<?= $item['id_halaqoh'] ?>, `<?= $item['halaqoh'] ?>`, '<?= $item['id_guru'] ?>')" class="btn btn-warning">Edit</button>
+                <a href="/OperatorPanel/Halaqoh/<?= $item['id_halaqoh'] ?>" class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -56,11 +61,11 @@
             <label for="id_guru" class="form-label">Pilih Guru</label>
             <select name="id_guru" class="form-control">
               <?php foreach ($dataGuru as $item) : ?>
-              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
+                <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
               <?php endforeach ?>
 
               <?php if (count($dataGuru) == 0) : ?>
-              <option value="" disabled selected>Belum ada guru</option>
+                <option value="" disabled selected>Belum ada guru</option>
               <?php endif ?>
             </select>
           </div>
@@ -95,11 +100,11 @@
             <label for="id_guru-edit" class="form-label">Pilih Guru</label>
             <select name="id_guru" id="id_guru-edit" class="form-control">
               <?php foreach ($dataGuru as $item) : ?>
-              <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
+                <option value="<?= $item['id_guru'] ?>"><?= $item['nama_guru'] ?></option>
               <?php endforeach ?>
 
               <?php if (count($dataGuru) == 0) : ?>
-              <option value="" disabled selected>Belum ada guru</option>
+                <option value="" disabled selected>Belum ada guru</option>
               <?php endif ?>
             </select>
           </div>
@@ -118,16 +123,16 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, halaqoh, id_guru) => {
-  $('#id_halaqoh-edit').val(id)
-  $('#halaqoh-edit').val(halaqoh)
-  $('#id_guru-edit option').each(function() {
-    if ($(this).val() == id_guru) {
-      $(this).prop('selected', true)
-    }
-  })
-  $('#edit').modal('show')
-}
+  const edit = (id, halaqoh, id_guru) => {
+    $('#id_halaqoh-edit').val(id)
+    $('#halaqoh-edit').val(halaqoh)
+    $('#id_guru-edit option').each(function() {
+      if ($(this).val() == id_guru) {
+        $(this).prop('selected', true)
+      }
+    })
+    $('#edit').modal('show')
+  }
 </script>
 
 <?= $this->endSection(); ?>

@@ -13,6 +13,10 @@ class OrangTua extends Migration
                 'type' => 'INT',
                 'auto_increment' => true
             ],
+            'nik' => [
+                'type' => 'VARCHAR',
+                'constraint' => 16
+            ],
             'nisn_anak' => [
                 'type' => 'VARCHAR',
                 'constraint' => 10
@@ -27,6 +31,11 @@ class OrangTua extends Migration
             'token_device' => [
                 'type' => 'TEXT',
                 'null' => true
+            ],
+            'is_valid' => [
+                'type' => 'INT',
+                'constraint' => 1,
+                'default' => 0
             ]
         ]);
 

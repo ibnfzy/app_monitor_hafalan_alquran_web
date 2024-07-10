@@ -14,6 +14,8 @@
           <tr>
             <th>#</th>
             <th>Username</th>
+            <th>Nama Operator</th>
+            <th>Nomor Whatsapp</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -22,9 +24,11 @@
           <tr>
             <td><?= $i = $key + 1; ?></td>
             <td><?= $item['username'] ?></td>
+            <td><?= $item['nama_operator'] ?></td>
+            <td>+<?= $item['nomor_wa'] ?></td>
             <td>
               <button
-                onclick="edit(<?= $item['id_operator'] ?>, '<?= $item['username'] ?>', '<?= $item['username'] ?>')"
+                onclick="edit(<?= $item['id_operator'] ?>, '<?= $item['username'] ?>', '<?= $item['nama_operator'] ?>', '<?= $item['nomor_wa'] ?>')"
                 class="btn btn-warning">Edit</button>
               <a href="/OperatorPanel/Operator/<?= $item['id_operator'] ?>" class="btn btn-danger">Delete</a>
             </td>
@@ -44,15 +48,29 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/OperatorPanel/Operator" method="post" enctype="multipart/form-data">
+      <form action="/OperatorPanel/Operator" method="post" enctype="multipart/form-data" id="form-add">
         <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username">
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="nama_operator" class="form-label">Nama Operator</label>
+            <input type="text" class="form-control" id="nama_operator" name="nama_operator" required>
+          </div>
+          <div class="mb-3">
+            <label for="nomor_wa" class="form-label">Nomor Whatsapp</label>
+            <input type="text" class="form-control" id="nomor_wa" name="nomor_wa"
+              data-inputmask="'mask': '62999999999999'" required>
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
+            <input type="password" class="form-control" id="password" name="password" autocomplete="new-password">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Konfirmasi Password</label>
+            <input type="password" class="form-control" id="konfirmasi_password" name="konfirmasi_password"
+              autocomplete="new-password">
           </div>
         </div>
         <div class="modal-footer">
@@ -71,7 +89,8 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/OperatorPanel/Operator/Update" method="post" enctype="multipart/form-data">
+      <form action="/OperatorPanel/Operator/Update" method="post" enctype="multipart/form-data" autocomplete="off"
+        id="form-edit">
         <input type="hidden" name="id_operator" id="id_operator-edit">
         <div class="modal-body">
           <div class="mb-3">
@@ -79,8 +98,22 @@
             <input type="text" class="form-control" id="username-edit" name="username">
           </div>
           <div class="mb-3">
+            <label for="username" class="form-label">Nama Operator</label>
+            <input type="text" class="form-control" id="nama_operator-edit" name="nama_operator">
+          </div>
+          <div class="mb-3">
+            <label for="nomor_wa-edit" class="form-label">Nomor Whatsapp</label>
+            <input type="text" class="form-control" id="nomor_wa-edit" name="nomor_wa"
+              data-inputmask="'mask': '62999999999999'">
+          </div>
+          <div class="mb-3">
             <label for="password" class="form-label">Password Baru</label>
-            <input type="password" class="form-control" id="password-edit" name="password">
+            <input type="password" class="form-control" id="password-edit" name="password" autocomplete="new-password">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Konfirmasi Password Baru</label>
+            <input type="password" class="form-control" id="konfirmasi_password-edit" name="konfirmasi_password"
+              autocomplete="new-password">
           </div>
         </div>
         <div class="modal-footer">
@@ -97,11 +130,48 @@
 <?= $this->section('script'); ?>
 
 <script>
-const edit = (id, username) => {
+const edit = (id, username, nama_operator, nomor_wa) => {
   $('#id_operator-edit').val(id)
   $('#username-edit').val(username)
+  $('#nama_operator-edit').val(nama_operator)
+  $('#nomor_wa-edit').val(nomor_wa)
   $('#edit').modal('show')
-}
+};
+
+$(":input").inputmask();
+
+$('#form-edit').submit(function(e) {
+  e.preventDefault()
+  var password = $('#password-edit').val()
+  var konfirmasi_password = $('#konfirmasi_password-edit').val()
+  if (password != konfirmasi_password) {
+    $("#konfirmasi_password-edit").css("border-color", "red");
+    $("#konfirmasi_password-edit").siblings("label").css("color", "red").text("Password tidak sama");
+  } else {
+    $("#konfirmasi_password-edit").css("border-color", "");
+    $("#konfirmasi_password-edit").siblings("label").css("color", "").text("Password");
+    $("#form-edit").unbind().submit();
+  }
+});
+
+$('#form-add').submit(function(e) {
+  e.preventDefault()
+  var password = $('#password').val()
+  var konfirmasi_password = $('#konfirmasi_password').val()
+  if (password === '' || konfirmasi_password === '') {
+    $("#konfirmasi_password").css("border-color", "red");
+    $("#konfirmasi_password").siblings("label").css("color", "red").text("Password tidak boleh kosong");
+    $('#password').css("border-color", "red");
+    $('#password').siblings("label").css("color", "red").text("Password tidak boleh kosong");
+  } else if (password != konfirmasi_password) {
+    $("#konfirmasi_password").css("border-color", "red");
+    $("#konfirmasi_password").siblings("label").css("color", "red").text("Password tidak sama");
+  } else {
+    $("#konfirmasi_password").css("border-color", "");
+    $("#konfirmasi_password").siblings("label").css("color", "").text("Password");
+    $("#form-add").unbind().submit();
+  }
+})
 </script>
 
 <?= $this->endSection(); ?>

@@ -397,7 +397,7 @@ class GuruController extends BaseController
 
         $surah = $this->db->table('al_quran_surah')->where('nomor', $this->request->getPost('surah'))->get()->getRowArray();
 
-        $response = $this->save_notifikasi($this->request->getPost('nisn_siswa'), $this->request->getPost('keterangan'), $surah['nama_latin']);
+        $this->save_notifikasi($this->request->getPost('nisn_siswa'), $this->request->getPost('keterangan'), $surah['nama_latin']);
 
         $this->db->table('hafalan')->insert([
             'id_siswa' => $this->request->getPost('id_siswa'),
@@ -520,7 +520,7 @@ class GuruController extends BaseController
     public function hafalan_siswa_detail($id)
     {
         return view('guru/hafalan_siswa_detail', [
-            'dataSiswa' => $this->db->table('siswa')->where('id_siswa', $id)->get()->getRowArray(),
+            'dataSiswa' => $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
             'maxData' => $this->db->query('SELECT GREATEST((SELECT COUNT(*) FROM tahsin),(SELECT COUNT(*) FROM murojaah),(SELECT COUNT(*) FROM hafalan_baru)) as max_rows')->getRowArray(),
             'dataTahsin' => $this->db->table('tahsin')->where('id_siswa', $id)->get()->getResultArray(),

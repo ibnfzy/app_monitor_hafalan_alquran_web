@@ -6,8 +6,9 @@
 
 <div class="container-fluid px-4">
   <h1 class="mt-4 text-white">Halaqoh <?= $dataHalaqoh['halaqoh']; ?> | Halaman Hafalan</h1>
-  <ol class="breadcrumb mb-4">
-    <button class="btn btn-primary" onclick="history.back()">Kembali</button>
+  <ol class="breadcrumb mb-4 mx-2">
+    <button class="btn btn-primary mx-1" onclick="history.back()">Kembali</button>
+    <a href="/GuruPanel/Absensi/<?= $dataHalaqoh['id_halaqoh']; ?>" class="btn btn-danger mx-1">Absensi</a>
   </ol>
   <div class="card mb-4">
     <div class="card-body table-responsive">
@@ -97,7 +98,13 @@
           </div>
           <div class="mb-3">
             <label for="jilid" class="form-label">Jilid</label>
-            <input type="text" class="form-control" id="jilid" name="jilid">
+            <select name="jilid" id="jilid" class="form-control">
+              <option value="Pelajaran Makharijul Huruf">Pelajaran Makharijul Huruf</option>
+              <option value="Pelajaran Tanda Baca">Pelajaran Tanda Baca</option>
+              <option value="Pelajaran Hukum Bacaan">Pelajaran Hukum Bacaan</option>
+              <option value="Pelajaran Mad">Pelajaran Mad</option>
+              <option value="Bacaan Ghoribah">Bacaan Ghoribah</option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="keterangan">Keterangan</label>
@@ -219,7 +226,6 @@
   </div>
 </div>
 
-
 <div class="modal fade" id="detail" tabindex="-1" aria-labelledby="detailLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -292,8 +298,8 @@ const detailHafalan = (id_siswa, nama_siswa) => {
       $('#tbody-detail').empty();
       if (data.length > 0) {
         $.each(data, function(index, item) {
-          aksi = `<div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          aksi = `
+              <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                       Menu Hapus
                     </button>
                     <ul class="dropdown-menu text-bg-danger">` +
@@ -306,7 +312,8 @@ const detailHafalan = (id_siswa, nama_siswa) => {
             (item.id_hafalan_baru === "" ? "" :
               `<li><a class="dropdown-item text-white" href="/GuruPanel/HafalanSiswa/HafalanBaru/` + item
               .id_hafalan_baru + `">Hapus Hafalan Baru</a></li>`) +
-            `</ul></div>`;
+            `</ul>
+              </div>`;
 
           $('#tbody-detail').append('<tr>' +
             '<td>' + (index + 1) + '</td>' +
@@ -353,6 +360,21 @@ const tambah_hafalan_baru = (id_siswa, nisn) => {
   $('#nisn_siswa2').val(nisn)
   $('#tambah_hafalan_baru').modal('show')
 }
+
+const edit_tahsin = (id_tahsin) => {
+  $('#id_tahsin').val(id_tahsin)
+  $('#edit_tahsin').modal('show')
+}
+
+const edit_murojaah = (id_murojaah) => {
+  $('#id_murojaah').val(id_murojaah)
+  $('#edit_murojaah').modal('show')
+}
+
+const edit_hafalan_baru = (id_hafalan_baru) => {
+  $('#id_hafalan_baru').val(id_hafalan_baru)
+  $('#edit_hafalan_baru').modal('show')
+};
 </script>
 
 <?= $this->endSection(); ?>

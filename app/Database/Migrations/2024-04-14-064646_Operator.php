@@ -19,6 +19,14 @@ class Operator extends Migration
             ],
             'password' => [
                 'type' => 'TEXT'
+            ],
+            'nomor_wa' => [
+                'type' => 'VARCHAR',
+                'constraint' => 13
+            ],
+            'nama_operator' => [
+                'type' => 'VARCHAR',
+                'constraint' => 250
             ]
         ]);
 

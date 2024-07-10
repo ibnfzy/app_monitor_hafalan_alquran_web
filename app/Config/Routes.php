@@ -10,6 +10,9 @@ $routes->get('Home', 'Home::new_home');
 $routes->get('Kegiatan', 'Home::kegiatan');
 $routes->get('Kegiatan/(:num)', 'Home::kegiatan_detail/$1');
 
+$routes->get('Registrasi', 'Home::registrasi');
+$routes->post('Registrasi', 'Home::registrasi_save');
+
 $routes->group('Login', function (RouteCollection $routes) {
   $routes->get('Guru', 'GuruLogin::index');
   $routes->get('Guru/Keluar', 'GuruLogin::logoff');
