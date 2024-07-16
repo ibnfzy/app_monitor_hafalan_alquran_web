@@ -18,7 +18,7 @@ class API extends BaseController
     {
         $check = $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nis'))->get()->getRowArray();
 
-        if ($check) {
+        if ($check['is_valid'] == 1) {
             $verify = password_verify((string)$this->request->getPost('password'), $check['password']);
 
             if ($verify) {
@@ -108,7 +108,7 @@ class API extends BaseController
             ]
         ]);
     }
-
+    
     public function save_token_device()
     {
         $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([

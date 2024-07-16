@@ -56,8 +56,8 @@
                 <div class="card-body">
                   <form action="/Registrasi" method="post" id="registrasi">
                     <div class="form-floating mb-3">
-                      <input class="form-control" id="nik" type="text" name="nik"
-                        data-inputmask="'mask': '9999999999999999'" required />
+                      <input class="form-control" id="nik" type="text" name="nik" data-inputmask="'mask': '9999999999999999'"
+                        required />
                       <label for="nik">NIK</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -77,7 +77,7 @@
                     <div class="form-floating mb-3">
                       <input class="form-control" id="inputPassword2" type="password" placeholder="Password"
                         name="konfirmasi_password" required />
-                      <label for="inputPassword2">Password</label>
+                      <label for="inputPassword2">konfirmasi Password</label>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                       <button class="btn btn-primary float-end">Daftar Akun</button>

@@ -7,7 +7,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav ms-auto" style="margin-right: 10em;">
+      <ul class="navbar-nav ms-auto" style="margin-right: 2em;">
         <li class="nav-item">
           <a class="nav-link mx-2" aria-current="page" href="/">Home</a>
         </li>

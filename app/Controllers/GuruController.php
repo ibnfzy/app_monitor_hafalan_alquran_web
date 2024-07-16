@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\Database\RawSql;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Google\Client;
 use GuzzleHttp\Client as GuzzleClient;
 
@@ -522,7 +525,7 @@ class GuruController extends BaseController
         return view('guru/hafalan_siswa_detail', [
             'dataSiswa' => $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('id_siswa', $id)->get()->getRowArray(),
             'dataGuru' => $this->db->table('guru')->select('nama_guru')->where('id_guru', session()->get('id_guru'))->get()->getRowArray(),
-            'maxData' => $this->db->query('SELECT GREATEST((SELECT COUNT(*) FROM tahsin),(SELECT COUNT(*) FROM murojaah),(SELECT COUNT(*) FROM hafalan_baru)) as max_rows')->getRowArray(),
+            'maxData' => $this->db->query("SELECT GREATEST((SELECT COUNT(*) FROM tahsin WHERE id_siswa = $id),(SELECT COUNT(*) FROM murojaah WHERE id_siswa = $id),(SELECT COUNT(*) FROM hafalan_baru WHERE id_siswa = $id)) as max_rows")->getRowArray(),
             'dataTahsin' => $this->db->table('tahsin')->where('id_siswa', $id)->get()->getResultArray(),
             'dataMurojaah' => $this->db->table('murojaah')->where('id_siswa', $id)->get()->getResultArray(),
             'dataHafalanBaru' => $this->db->table('hafalan_baru')->where('id_siswa', $id)->get()->getResultArray()
@@ -568,7 +571,7 @@ class GuruController extends BaseController
         $getTahsin = $this->db->table('tahsin')->where('id_siswa', $id)->get()->getResultArray();
         $getMurojaah = $this->db->table('murojaah')->where('id_siswa', $id)->get()->getResultArray();
         $getHafalanBaru = $this->db->table('hafalan_baru')->where('id_siswa', $id)->get()->getResultArray();
-        $maxData = $this->db->query('SELECT GREATEST((SELECT COUNT(*) FROM tahsin),(SELECT COUNT(*) FROM murojaah),(SELECT COUNT(*) FROM hafalan_baru)) as max_rows')->getRowArray();
+        $maxData = $this->db->query("SELECT GREATEST((SELECT COUNT(*) FROM tahsin WHERE id_siswa = $id),(SELECT COUNT(*) FROM murojaah WHERE id_siswa = $id),(SELECT COUNT(*) FROM hafalan_baru WHERE id_siswa = $id)) as max_rows")->getRowArray();
 
         $data = [];
 
@@ -761,42 +764,65 @@ class GuruController extends BaseController
 
     public function getDataChart()
     {
-        $getRandomSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa')->orderBy('id_siswa', 'RAND()')->limit(5)->get()->getRowArray();
+        $getRandomSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa')->orderBy('id_siswa', 'RAND()')->limit(1)->get()->getRowArray();
 
-        $getDistinctNamaSurah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah'))->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('nama_surah')->get()->getResultArray();
+        $getDateMinMax = $this->db->query("SELECT MIN(tanggal) AS tanggal_terendah, MAX(tanggal) AS tanggal_tertinggi FROM (SELECT tanggal_tahsin AS tanggal FROM tahsin WHERE id_siswa = {$getRandomSiswa['id_siswa']} UNION SELECT tanggal_murojaah AS tanggal FROM murojaah WHERE id_siswa = {$getRandomSiswa['id_siswa']} UNION SELECT tanggal_hafalan_baru AS tanggal FROM hafalan_baru WHERE id_siswa = {$getRandomSiswa['id_siswa']}) AS combined_dates;")->getRowArray();
 
-        $getSetoranHafalan = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), jilid, id_siswa'))->where('jilid', 'fasih')->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('nama_surah')->get()->getResultArray();
+        $dataMin = $getDateMinMax['tanggal_terendah'];
+        $dataMax = $getDateMinMax['tanggal_tertinggi'];
+        $dateRange = new DatePeriod(
+            new DateTime($dataMin),
+            new DateInterval('P1D'),
+            new DateTime($dataMax)
+        );
 
-        $getMurojaah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), murojaah, id_siswa'))->where('id_siswa', $getRandomSiswa['id_siswa'])->where('murojaah', 1)->groupBy('nama_surah')->get()->getResultArray();
-
-        $setoranHafalanData = [];
-        foreach ($getSetoranHafalan as $item) {
-            $setoranHafalanData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        $dataMinMax = [];
+        foreach ($dateRange as $date) {
+            $dataMinMax[] = $date->format('Y-m-d');
         }
 
-        $murojaahData = [];
-        foreach ($getMurojaah as $item) {
-            $murojaahData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        $dataTahsin = $this->db->table('tahsin')->select(new RawSql("DISTINCT tanggal_tahsin as tanggal, COUNT(tanggal_tahsin) as max_data, id_siswa"))->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('tanggal_tahsin')->get()->getResultArray();
+
+        $tahsinArr = [];
+        foreach ($dataTahsin as $item) {
+            $tahsinArr[$item['tanggal']] = $item['max_data'];
         }
 
-        $namaSurah = array_column($getDistinctNamaSurah, 'nama_surah');
+        $dataMurojaah = $this->db->table('murojaah')->select(new RawSql("DISTINCT tanggal_murojaah as tanggal, COUNT(tanggal_murojaah) as max_data, id_siswa"))->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('tanggal_murojaah')->get()->getResultArray();
+
+        $murojaahArr = [];
+        foreach ($dataMurojaah as $item) {
+            $murojaahArr[$item['tanggal']] = $item['max_data'];
+        }
+
+        $dataHafalanBaru = $this->db->table('hafalan_baru')->select(new RawSql("DISTINCT tanggal_hafalan_baru as tanggal, COUNT(tanggal_hafalan_baru) as max_data, id_siswa"))->where('id_siswa', $getRandomSiswa['id_siswa'])->groupBy('tanggal_hafalan_baru')->get()->getResultArray();
+
+        $hafalanBaruArr = [];
+        foreach ($dataHafalanBaru as $item) {
+            $hafalanBaruArr[$item['tanggal']] = $item['max_data'];
+        }
 
         $datasets = [
             [
-                'label' => 'Setoran Hafalan',
-                'data' => $setoranHafalanData,
+                'label' => 'Tahsin',
+                'data' => $tahsinArr,
                 'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
             ],
             [
-                'label' => "Muroja'ah",
-                'data' => $murojaahData,
+                'label' => 'Murojaah',
+                'data' => $murojaahArr,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ],
+            [
+                'label' => 'Hafalan Baru',
+                'data' => $hafalanBaruArr,
                 'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
             ]
         ];
 
         $data = [
             'datasets' => $datasets,
-            'label' => $namaSurah,
+            'label' => $dataMinMax,
             'id_siswa' => $getRandomSiswa['id_siswa'],
             'nama_siswa' => $getRandomSiswa['nama_siswa']
         ];
@@ -808,40 +834,63 @@ class GuruController extends BaseController
     {
         $getDataSiswa = $this->db->table('siswa')->select('id_siswa, nama_siswa')->where('id_siswa', $id_siswa)->get()->getRowArray();
 
-        $getDistinctSurah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah'))->where('id_siswa', $id_siswa)->groupBy('nama_surah')->get()->getResultArray();
+        $getDateMinMax = $this->db->query("SELECT MIN(tanggal) AS tanggal_terendah, MAX(tanggal) AS tanggal_tertinggi FROM (SELECT tanggal_tahsin AS tanggal FROM tahsin WHERE id_siswa = {$getDataSiswa['id_siswa']} UNION SELECT tanggal_murojaah AS tanggal FROM murojaah WHERE id_siswa = {$getDataSiswa['id_siswa']} UNION SELECT tanggal_hafalan_baru AS tanggal FROM hafalan_baru WHERE id_siswa = {$getDataSiswa['id_siswa']}) AS combined_dates;")->getRowArray();
 
-        $getSetoranHafalan = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), jilid, id_siswa'))->where('jilid', 'fasih')->where('id_siswa', $id_siswa)->groupBy('nama_surah')->get()->getResultArray();
+        $dataMin = $getDateMinMax['tanggal_terendah'];
+        $dataMax = $getDateMinMax['tanggal_tertinggi'];
+        $dateRange = new DatePeriod(
+            new DateTime($dataMin),
+            new DateInterval('P1D'),
+            new DateTime($dataMax)
+        );
 
-        $getMurojaah = $this->db->table('hafalan')->select(new RawSql('DISTINCT nama_surah, COUNT(nama_surah), murojaah, id_siswa'))->where('id_siswa', $id_siswa)->where('murojaah', 1)->groupBy('nama_surah')->get()->getResultArray();
-
-        $setoranHafalanData = [];
-        foreach ($getSetoranHafalan as $item) {
-            $setoranHafalanData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        $dataMinMax = [];
+        foreach ($dateRange as $date) {
+            $dataMinMax[] = $date->format('Y-m-d');
         }
 
-        $murojaahData = [];
-        foreach ($getMurojaah as $item) {
-            $murojaahData[$item['nama_surah']] = $item['COUNT(nama_surah)'];
+        $dataTahsin = $this->db->table('tahsin')->select(new RawSql("DISTINCT tanggal_tahsin as tanggal, COUNT(tanggal_tahsin) as max_data, id_siswa"))->where('id_siswa', $getDataSiswa['id_siswa'])->groupBy('tanggal_tahsin')->get()->getResultArray();
+
+        $tahsinArr = [];
+        foreach ($dataTahsin as $item) {
+            $tahsinArr[$item['tanggal']] = $item['max_data'];
         }
 
-        $namaSurah = array_column($getDistinctSurah, 'nama_surah');
+        $dataMurojaah = $this->db->table('murojaah')->select(new RawSql("DISTINCT tanggal_murojaah as tanggal, COUNT(tanggal_murojaah) as max_data, id_siswa"))->where('id_siswa', $getDataSiswa['id_siswa'])->groupBy('tanggal_murojaah')->get()->getResultArray();
+
+        $murojaahArr = [];
+        foreach ($dataMurojaah as $item) {
+            $murojaahArr[$item['tanggal']] = $item['max_data'];
+        }
+
+        $dataHafalanBaru = $this->db->table('hafalan_baru')->select(new RawSql("DISTINCT tanggal_hafalan_baru as tanggal, COUNT(tanggal_hafalan_baru) as max_data, id_siswa"))->where('id_siswa', $getDataSiswa['id_siswa'])->groupBy('tanggal_hafalan_baru')->get()->getResultArray();
+
+        $hafalanBaruArr = [];
+        foreach ($dataHafalanBaru as $item) {
+            $hafalanBaruArr[$item['tanggal']] = $item['max_data'];
+        }
 
         $datasets = [
             [
-                'label' => 'Setoran Hafalan',
-                'data' => $setoranHafalanData,
+                'label' => 'Tahsin',
+                'data' => $tahsinArr,
                 'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
             ],
             [
-                'label' => "Muroja'ah",
-                'data' => $murojaahData,
+                'label' => 'Murojaah',
+                'data' => $murojaahArr,
+                'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
+            ],
+            [
+                'label' => 'Hafalan Baru',
+                'data' => $hafalanBaruArr,
                 'borderColor' => '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT)
             ]
         ];
 
         $data = [
             'datasets' => $datasets,
-            'label' => $namaSurah,
+            'label' => $dataMinMax,
             'id_siswa' => $getDataSiswa['id_siswa'],
             'nama_siswa' => $getDataSiswa['nama_siswa']
         ];

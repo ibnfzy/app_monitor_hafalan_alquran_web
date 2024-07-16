@@ -263,13 +263,15 @@
     }
   });
 
+  const textBodyKeterangan = `<?= $keterangan_tambahan; ?>`;
+
   doc.autoTable({
     head: [
       ['Keterangan Tambahan']
     ],
     body: [
       [
-        '<?= $keterangan_tambahan ?>',
+        textBodyKeterangan,
       ]
     ],
     theme: 'grid',
@@ -315,7 +317,7 @@
   doc.text('Musyrifah Tahfidz', 28, doc.lastAutoTable.finalY + 40, 'left');
   doc.setFont('helvetica', 'bold')
   doc.text('<?= $nama_guru; ?>', 27, doc.lastAutoTable.finalY + 55, 'left');
-  let textWidth = doc.getTextWidth('Siti Raoda, S.Pd');
+  let textWidth = doc.getTextWidth('<?= $nama_guru; ?>');
   doc.line(27, doc.lastAutoTable.finalY + 57, 27 + textWidth, doc.lastAutoTable.finalY + 57);
 
   doc.setFont('helvetica', 'normal')

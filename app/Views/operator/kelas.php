@@ -60,7 +60,10 @@
           </div>
           <div class="mb-3">
             <label for="semester" class="form-label">Semester</label>
-            <input type="text" class="form-control" id="semester" name="semester">
+            <select name="semester" id="semester" class="form-control">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
           </div>
         </div>
         <div class="modal-footer">

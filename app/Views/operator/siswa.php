@@ -154,8 +154,7 @@
             </div>
             <div class="mb-3">
               <label for="nik" class="form-label">NIK</label>
-              <input type="text" class="form-control" id="nik-edit" name="nik"
-                data-inputmask="'mask': '9999999999999999'">
+              <input type="text" class="form-control" id="nik-edit" name="nik" data-inputmask="'mask': '9999999999999999'">
             </div>
             <div class="mb-3">
               <label for="validasi" class="form-label">Status Akun</label>
