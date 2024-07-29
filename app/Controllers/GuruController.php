@@ -149,8 +149,19 @@ class GuruController extends BaseController
     {
         return view('guru/hafalan_siswa', [
             'data' => $this->db->table('siswa')->where('id_halaqoh', $id_halaqoh)->get()->getResultArray(),
-            'dataHalaqoh' => $this->db->table('halaqoh')->where('id_halaqoh', $id_halaqoh)->get()->getRowArray()
+            'dataHalaqoh' => $this->db->table('halaqoh')->where('id_halaqoh', $id_halaqoh)->get()->getRowArray(),
+            'dataHalaqohs' => $this->db->table('halaqoh')->get()->getResultArray()
         ]);
+    }
+
+    public function hafalan_ubah_status_halaqoh()
+    {
+        $getHalaqoh = $this->db->table('halaqoh')->where('id_halaqoh', $this->request->getPost('status_halaqoh'))->get()->getRowArray();
+        $this->db->table('siswa')->where('id_siswa', $this->request->getPost('id_siswa'))->update([
+            'status_halaqoh' => "Pindah ke Halaqoh '{$getHalaqoh['halaqoh']}'"
+        ]);
+
+        return redirect()->to(previous_url())->with('type-status', 'success')->with('message', 'Status hafalan siswa berhasil diubah');
     }
 
     public function hafalan_tahsin_insert()

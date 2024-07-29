@@ -8,7 +8,7 @@
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Tambah Data</button>
   </ol>
   <div class="card mb-4">
-    <div class="card-body">
+    <div class="card-body table-responsive">
       <table class="table table-bordered" id="datatables">
         <thead>
           <tr>
@@ -18,6 +18,7 @@
             <th>Guru</th>
             <th>Kelas</th>
             <th>Halaqoh</th>
+            <th>Status Halaqoh</th>
             <th>NIK Orang Tua</th>
             <th>Nama Orang Tua</th>
             <th>Status Akun Orang Tua</th>
@@ -26,31 +27,32 @@
         </thead>
         <tbody>
           <?php foreach ($data as $key => $item) : ?>
-          <tr>
-            <td><?= $i = $key + 1; ?></td>
-            <td><?= $item['nisn'] ?></td>
-            <td><?= $item['nama_siswa'] ?></td>
-            <td><?= $item['nama_guru']; ?></td>
-            <td><?= $item['kelas'] ?></td>
-            <td><?= $item['halaqoh'] ?></td>
-            <td><?= $item['nik'] ?></td>
-            <td><?= $item['nama_orang_tua'] ?></td>
-            <td>
-              <?php if ($item['is_valid'] == 1) : ?>
-              <span class="badge text-bg-success">Aktif</span>
-              <?php elseif ($item['is_valid'] == null) : ?>
-              <span class="badge text-bg-warning">Belum Daftar</span>
-              <?php else : ?>
-              <span class="badge text-bg-danger">Belum Validasi</span>
-              <?php endif ?>
-            </td>
-            <td>
-              <button
-                onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['id_halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>', '<?= $item['nik'] ?>', '<?= $item['is_valid'] ?>')"
-                class="btn btn-warning">Edit</button>
-              <a href="/OperatorPanel/Siswa/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
-            </td>
-          </tr>
+            <tr>
+              <td><?= $i = $key + 1; ?></td>
+              <td><?= $item['nisn'] ?></td>
+              <td><?= $item['nama_siswa'] ?></td>
+              <td><?= $item['nama_guru']; ?></td>
+              <td><?= $item['kelas'] ?></td>
+              <td><?= $item['halaqoh'] ?></td>
+              <td><?= $item['status_halaqoh'] ?></td>
+              <td><?= $item['nik'] ?></td>
+              <td><?= $item['nama_orang_tua'] ?></td>
+              <td>
+                <?php if ($item['is_valid'] == 1) : ?>
+                  <span class="badge text-bg-success">Aktif</span>
+                <?php elseif ($item['is_valid'] == null) : ?>
+                  <span class="badge text-bg-warning">Belum Daftar</span>
+                <?php else : ?>
+                  <span class="badge text-bg-danger">Belum Validasi</span>
+                <?php endif ?>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <button onclick="edit('<?= $item['id_siswa'] ?>', '<?= $item['nisn'] ?>', '<?= $item['nama_siswa'] ?>', '<?= $item['id_kelas'] ?>', '<?= $item['id_halaqoh'] ?>', '<?= $item['nama_orang_tua'] ?>', '<?= $item['nik'] ?>', '<?= $item['is_valid'] ?>', `<?= $item['status_halaqoh'] ?>`)" class="btn btn-warning">Edit</button>
+                  <a href="/OperatorPanel/Siswa/<?= $item['id_siswa'] ?>" class="btn btn-danger">Delete</a>
+                </div>
+              </td>
+            </tr>
           <?php endforeach ?>
         </tbody>
       </table>
@@ -74,18 +76,17 @@
           </div>
           <div class="mb-3">
             <label for="nisn" class="form-label">NISN</label>
-            <input type="text" class="form-control" id="nisn" name="nisn" data-inputmask="'mask': '9999999999'"
-              required>
+            <input type="text" class="form-control" id="nisn" name="nisn" data-inputmask="'mask': '9999999999'" required>
           </div>
           <div class="mb-3">
             <label for="id_kelas">KELAS</label>
             <select class="form-select" id="id_kelas" name="id_kelas" required>
               <?php foreach ($kelas as $item) : ?>
-              <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?></option>
+                <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?></option>
               <?php endforeach ?>
 
               <?php if (count($kelas) == 0) : ?>
-              <option value="" disabled selected>Belum ada kelas</option>
+                <option value="" disabled selected>Belum ada kelas</option>
               <?php endif ?>
             </select>
           </div>
@@ -93,7 +94,7 @@
             <label for="halaqoh">Halaqoh</label>
             <select class="form-select" id="halaqoh" name="id_halaqoh" required>
               <?php foreach ($dataHalaqoh as $item) : ?>
-              <option value="<?= $item['id_halaqoh']; ?>"><?= $item['halaqoh']; ?></option>
+                <option value="<?= $item['id_halaqoh']; ?>"><?= $item['halaqoh']; ?></option>
               <?php endforeach ?>
             </select>
           </div>
@@ -114,8 +115,9 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Data</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="/OperatorPanel/Siswa/Update" method="post" enctype="multipart/form-data">
+      <form action="/OperatorPanel/Siswa/Update" method="post" enctype="multipart/form-data" id="form-edit">
         <input type="hidden" name="id_siswa" id="id_siswa-edit">
+        <input type="hidden" name="id_halaqoh" id="id_halaqoh-edit">
         <div class="modal-body">
           <div class="mb-3">
             <label for="nama_siswa" class="form-label">Nama Siswa</label>
@@ -129,20 +131,21 @@
             <label for="id_kelas">KELAS</label>
             <select class="form-select" id="id_kelas-edit" name="id_kelas">
               <?php foreach ($kelas as $item) : ?>
-              <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?>
-              </option>
+                <option value="<?= $item['id_kelas'] ?>"><?= $item['nama_kelas']; ?>
+                </option>
               <?php endforeach ?>
 
               <?php if (count($kelas) == 0) : ?>
-              <option value="" disabled selected>Belum ada kelas</option>
+                <option value="" disabled selected>Belum ada kelas</option>
               <?php endif ?>
             </select>
           </div>
           <div class="mb-3">
             <label for="halaqoh">Halaqoh</label>
+            <span class="text-danger" id="status_halaqoh"></span>
             <select class="form-select" id="halaqoh-edit" name="id_halaqoh">
               <?php foreach ($dataHalaqoh as $item) : ?>
-              <option value="<?= $item['id_halaqoh']; ?>"><?= $item['halaqoh']; ?></option>
+                <option value="<?= $item['id_halaqoh']; ?>"><?= $item['halaqoh']; ?></option>
               <?php endforeach ?>
             </select>
           </div>
@@ -167,8 +170,7 @@
           </div>
           <div class="mb-3">
             <label for="inputPassword" class="form-label">Password Baru</label>
-            <input type="password" class="form-control" id="inputPassword-edit" name="password_baru"
-              autocomplete="new-password">
+            <input type="password" class="form-control" id="inputPassword-edit" name="password_baru" autocomplete="new-password">
           </div>
         </div>
         <div class="modal-footer">
@@ -185,40 +187,58 @@
 <?= $this->section('script'); ?>
 
 <script>
-$(":input").inputmask();
+  $(":input").inputmask();
 
-const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid) => {
-  $('#id_siswa-edit').val(id)
-  $('#nama_siswa-edit').val(nama_siswa)
-  $('#nisn-edit').val(nisn)
-  $('#id_kelas-edit option').each(function() {
-    if ($(this).val() == id_kelas) {
-      $(this).attr('selected', '');
+  const edit = (id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid, status_halaqoh) => {
+    $('#id_siswa-edit').val(id)
+    $('#id_halaqoh-edit').val(halaqoh)
+    $('#nama_siswa-edit').val(nama_siswa)
+    $('#nisn-edit').val(nisn)
+    $('#id_kelas-edit option').each(function() {
+      if ($(this).val() == id_kelas) {
+        $(this).attr('selected', '');
+      }
+    });
+    $('#halaqoh-edit option').each(function() {
+      if ($(this).val() == halaqoh) {
+        $(this).attr('selected', '');
+      }
+    });
+    $('#nama_orang_tua-edit').val(nama_orang_tua)
+    $('#nik-edit').val(nik)
+    $('#is_valid-edit option').each(function() {
+      if ($(this).val() == is_valid) {
+        $(this).attr('selected', '');
+      }
+    });
+    $('#status_halaqoh').text(status_halaqoh);
+
+    console.log(id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid);
+
+    if (nama_orang_tua == '') {
+      $('#dataOrangTua').attr('hidden', 'hidden');
+    } else {
+      $('#dataOrangTua').removeAttr('hidden');
     }
+
+    $('#edit').modal('show')
+  };
+
+  $(document).ready(function() {
+    $('#form-edit').submit(function(e) {
+      e.preventDefault()
+      var new_halaqoh = $('#halaqoh-edit option:selected').val();
+      var old_halaqoh = $('#id_halaqoh-edit').val();
+      if (new_halaqoh == old_halaqoh) {
+        $('#halaqoh-edit').css("border-color", "red");
+        $('#halaqoh-edit').siblings("label").css("color", "red").text("Halaqoh tidak boleh sama");
+      } else {
+        $("#halaqoh-edit").css("border-color", "");
+        $("#halaqoh-edit").siblings("label").css("color", "").text("Halaqoh");
+        $("#form-edit").unbind().submit();
+      }
+    })
   });
-  $('#halaqoh-edit option').each(function() {
-    if ($(this).val() == halaqoh) {
-      $(this).attr('selected', '');
-    }
-  });
-  $('#nama_orang_tua-edit').val(nama_orang_tua)
-  $('#nik-edit').val(nik)
-  $('#is_valid-edit option').each(function() {
-    if ($(this).val() == is_valid) {
-      $(this).attr('selected', '');
-    }
-  })
-
-  console.log(id, nisn, nama_siswa, id_kelas, halaqoh, nama_orang_tua, nik, is_valid);
-
-  if (nama_orang_tua == '') {
-    $('#dataOrangTua').attr('hidden', 'hidden');
-  } else {
-    $('#dataOrangTua').removeAttr('hidden');
-  }
-
-  $('#edit').modal('show')
-}
 </script>
 
 <?= $this->endSection(); ?>

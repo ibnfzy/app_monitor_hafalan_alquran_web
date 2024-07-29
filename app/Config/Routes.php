@@ -41,6 +41,7 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->get('HafalanSiswa/Rekap/(:num)', 'GuruController::hafalan_siswa_detail/$1');
   $routes->get('HafalanSiswa/Detail/(:num)', 'GuruController::hafalan_siswa_/$1');
   $routes->get('HafalanSiswa/(:segment)/(:num)', 'GuruController::hafalan_siswa_delete/$1/$2');
+  $routes->post('HafalanSiswa/StatusHalaqoh', 'GuruController::hafalan_ubah_status_halaqoh');
 
   $routes->get('Absensi/(:num)', 'GuruController::absen/$1');
   $routes->post('Absensi', 'GuruController::absensi_proses');

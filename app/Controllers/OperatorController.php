@@ -12,6 +12,8 @@ class OperatorController extends BaseController
     public function __construct()
     {
         $this->db = \Config\Database::connect();
+        $get = $this->db->table('siswa')->where('status_halaqoh !=', null)->get()->getResultArray();
+        session()->set('totalSiswaChange', count($get));
     }
 
     public function index()
@@ -330,12 +332,19 @@ class OperatorController extends BaseController
 
         $getKelas = $this->db->table('kelas')->where('id_kelas', $this->request->getPost('id_kelas'))->get()->getRowArray();
 
+        $getSiswa = $this->db->table('siswa')->where('id_siswa', $this->request->getPost('id_siswa'))->get()->getRowArray();
+
+        $getHalaqoh = $this->db->table('halaqoh')->where('id_halaqoh', $this->request->getPost('id_halaqoh'))->get()->getRowArray();
+
+        $checkString = str_contains($getSiswa['status_halaqoh'], $getHalaqoh['halaqoh']);
+
         $this->db->table('siswa')->where('id_siswa', $this->request->getPost('id_siswa'))->update([
             'nisn' => $this->request->getPost('nisn'),
             'nama_siswa' => $this->request->getPost('nama_siswa'),
             'id_kelas' => $this->request->getPost('id_kelas'),
             'id_halaqoh' => $this->request->getPost('id_halaqoh'),
-            'kelas' => $getKelas['nama_kelas']
+            'kelas' => $getKelas['nama_kelas'],
+            'status_halaqoh' => $checkString ? null : $getSiswa['status_halaqoh']
         ]);
 
         $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([

@@ -50,7 +50,11 @@
   <script src="<?= base_url() ?>panel/js/scripts.js"></script>
 
   <script type="text/javascript">
-  new DataTable('#datatables');
+  new DataTable('#datatables', {
+    "language": {
+      "url": "https://cdn.datatables.net/plug-ins/1.13.1/i18n/id.json"
+    }
+  });
   // $(document).ready(function() {
   //   $('#select2').select2({
   //     dropdownParent: $('#dataBarang'),

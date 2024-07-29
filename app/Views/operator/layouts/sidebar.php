@@ -17,6 +17,7 @@
         <a class="nav-link text-white" href="/OperatorPanel/Siswa">
           <div class="sb-nav-link-icon"><i class="fa-solid fa-users text-white"></i></div>
           Siswa
+          <span class="badge text-bg-primary mx-3"><?= session()->get('totalSiswaChange'); ?></span>
         </a>
         <a class="nav-link text-white" href="/OperatorPanel/Operator">
           <div class="sb-nav-link-icon"><i class="fa-solid fa-user-tie text-white"></i></div>
