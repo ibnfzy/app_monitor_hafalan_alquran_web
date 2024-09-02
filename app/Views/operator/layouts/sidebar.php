@@ -29,7 +29,7 @@
         </a>
         <a href="/OperatorPanel/Kegiatan" class="nav-link text-white">
           <div class="sb-nav-link-icon"><i class="fa-regular fa-newspaper text-white"></i></div>
-          Kegiatan
+          Informasi
         </a>
         <a href="/OperatorPanel/Corousel" class="nav-link text-white">
           <div class="sb-nav-link-icon"><i class="fa-solid fa-panorama text-white"></i></div>

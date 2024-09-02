@@ -39,13 +39,17 @@ class API extends BaseController
 
     public function informasi_siswa($nisn)
     {
+        $getSiswa = $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('nisn', $nisn)->get()->getRowArray();
+
+        $getHalaqoh = $this->db->table('halaqoh')->where('id_halaqoh', $getSiswa['id_halaqoh'])->get()->getRowArray();
+
         return $this->response->setJSON([
             'status' => 200,
             'message' => 'Success',
             'data' => [
-                'siswa' => $this->db->table('siswa')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->where('nisn', $nisn)->get()->getRowArray(),
-                'total_hafalan_berhasil' => $this->db->table('hafalan')->where('nisn', $nisn)->where('keterangan', 'hafal')->countAllResults(),
-                'total_kehadiran' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Hadir')->countAllResults(),
+                'siswa' => $getSiswa,
+                'total_hafalan_berhasil' => $this->db->table('hafalan_baru')->where('nisn', $nisn)->where('keterangan', 'Hafal')->countAllResults(),
+                'total_kehadiran' => $this->db->table('absensi')->where('id_guru', $getHalaqoh['id_guru'])->where('nisn', $nisn)->where('keterangan', 'Hadir')->countAllResults(),
                 'total_alfa' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Alpa')->countAllResults(),
                 'total_izin' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Izin')->countAllResults(),
                 'total_sakit' => $this->db->table('absensi')->where('nisn', $nisn)->where('keterangan', 'Sakit')->countAllResults(),
@@ -108,7 +112,7 @@ class API extends BaseController
             ]
         ]);
     }
-    
+
     public function save_token_device()
     {
         $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([
@@ -130,6 +134,49 @@ class API extends BaseController
             'data' => [
                 'notifikasi' => $this->db->table('notifikasi')->where('nisn', $nisn)->orderBy('id_notifikasi', 'DESC')->get()->getResultArray()
             ]
+        ]);
+    }
+
+    public function get_feedback_guru_orang_tua($nisn)
+    {
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Success',
+            'data' => [
+                'feedback' => $this->db->table('feedback')->where('nisn', $nisn)->orderBy('id_feedback', 'DESC')->get()->getRowArray()
+            ]
+        ]);
+    }
+
+    public function insert_feedback()
+    {
+        $check = $this->db->table('feedback')->where('nisn', $this->request->getPost('nisn'))->get()->getRowArray();
+
+        $getDataOrangTua = $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->get()->getRowArray();
+
+        $getSiswaGuru = $this->db->table('siswa')->where('siswa.nisn', $this->request->getPost('nisn'))->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh')->join('guru', 'guru.id_guru = halaqoh.id_guru')->get()->getRowArray();
+
+        if ($check) {
+            $this->db->table('feedback')->where('nisn', $this->request->getPost('nisn'))->update([
+                'feedback' => $this->request->getPost('feedback'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'id_guru' => $getSiswaGuru['id_guru'],
+                'id_orang_tua' => $getDataOrangTua['id_orang_tua']
+            ]);
+        } else {
+            $this->db->table('feedback')->insert([
+                'nisn' => $this->request->getPost('nisn'),
+                'feedback' => $this->request->getPost('feedback'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'id_guru' => $getSiswaGuru['id_guru'],
+                'id_orang_tua' => $getDataOrangTua['id_orang_tua']
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => 200,
+            'message' => 'Success',
+            'data' => []
         ]);
     }
 }

@@ -222,11 +222,12 @@ const absensi_kelola = (id_siswa, nama_siswa) => {
             '<td>' + item.tanggal + '</td>' +
             '<td>' + item.keterangan + '</td>' +
             '<td>' + '<a class="btn btn-danger" href="/GuruPanel/Absensi/Delete/' + item.id_absensi +
-            '">Hapus</a>' + '</td>' +
+            '">Hapus</a>' +
+            '</td>' +
             '</tr>');
         });
       } else {
-        $('#dataAbsensi').append('<tr><td colspan="3">DATA KOSONG</td></tr>');
+        $('#dataAbsensi').append('<tr><td colspan="4">DATA KOSONG</td></tr>');
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {

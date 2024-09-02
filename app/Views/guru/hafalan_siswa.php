@@ -104,7 +104,7 @@
           <div class="mb-3">
             <label for="status_halaqoh" class="form-label">Ubah Halaqoh</label>
             <select name="status_halaqoh" id="id_halaqoh" class="form-control">
-              <?php foreach ($dataHalaqohs as $item) : ?>
+              <?php foreach ((array) $dataHalaqohs as $item) : ?>
               <option value="<?= $item['id_halaqoh'] ?>">Ubah ke <?= $item['halaqoh']; ?></option>
               <?php endforeach ?>
             </select>
@@ -127,7 +127,7 @@
         <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="/GuruPanel/HafalanSiswa/Tahsin" method="post" enctype="multipart/form-data" id="formTahsin">
-        <input type="hidden" name="id_siswa" id="id_siswa">
+        <input type="hidden" name="id_siswa" id="id_siswa0">
         <input type="hidden" name="nisn_siswa" id="nisn_siswa">
         <div class="modal-body">
           <div class="mb-3">
@@ -408,7 +408,7 @@ const detailHafalan = (id_siswa, nama_siswa) => {
 }
 
 const tambah_tahsin = (id_siswa, nisn) => {
-  $('#id_siswa').val(id_siswa)
+  $('#id_siswa0').val(id_siswa)
   $('#nisn_siswa').val(nisn)
   $('#tambah_tahsin').modal('show')
 }

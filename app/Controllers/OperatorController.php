@@ -208,7 +208,7 @@ class OperatorController extends BaseController
     public function siswa()
     {
         return view('operator/siswa', [
-            'data' => $this->db->table('siswa')->select('siswa.*, orang_tua.nama_orang_tua, orang_tua.nik, orang_tua.is_valid, halaqoh.*, guru.id_guru, guru.nama_guru')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh', 'left')->join('guru', 'guru.id_guru = halaqoh.id_guru', 'left')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
+            'data' => $this->db->table('siswa')->select('siswa.*, orang_tua.nama_orang_tua, orang_tua.nik, orang_tua.is_valid, orang_tua.no_wa, orang_tua.id_orang_tua, halaqoh.*, guru.id_guru, guru.nama_guru')->join('orang_tua', 'orang_tua.nisn_anak = siswa.nisn', 'left')->join('halaqoh', 'halaqoh.id_halaqoh = siswa.id_halaqoh', 'left')->join('guru', 'guru.id_guru = halaqoh.id_guru', 'left')->orderBy('id_siswa', 'DESC')->get()->getResultArray(),
             'kelas' => $this->db->table('kelas')->orderBy('id_kelas', 'DESC')->get()->getResultArray(),
             'dataHalaqoh' => $this->db->table('halaqoh')->orderBy('id_halaqoh', 'DESC')->get()->getResultArray(),
         ]);
@@ -271,8 +271,14 @@ class OperatorController extends BaseController
                     'required' => 'ID siswa tidak boleh kosong'
                 ]
             ],
+            'id_orang_tua' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'ID Orang tua tidak boleh kosong'
+                ]
+            ],
             'nisn' => [
-                'rules' => 'required|is_unique[siswa.nisn, id_siswa, {id_siswa}]',
+                'rules' => 'required|is_unique[siswa.nisn,id_siswa,{id_siswa}]',
                 'errors' => [
                     'required' => 'NISn tidak boleh kosong',
                     'is_unique' => 'NISn sudah terdaftar'
@@ -314,6 +320,13 @@ class OperatorController extends BaseController
                 'errors' => [
                     'required' => 'NIK tidak boleh kosong'
                 ]
+            ],
+            'no_wa' => [
+                'rules' => 'required|is_unique[orang_tua.no_wa,id_orang_tua,{id_orang_tua}]',
+                'errors' => [
+                    'required' => 'Nomor WA tidak boleh kosong',
+                    'is_unique' => 'Nomor WA sudah terdaftar'
+                ]
             ]
         ];
 
@@ -347,11 +360,12 @@ class OperatorController extends BaseController
             'status_halaqoh' => $checkString ? null : $getSiswa['status_halaqoh']
         ]);
 
-        $this->db->table('orang_tua')->where('nisn_anak', $this->request->getPost('nisn'))->update([
+        $this->db->table('orang_tua')->where('id_orang_tua', $this->request->getPost('id_orang_tua'))->update([
             'nisn_anak' => $this->request->getPost('nisn'),
             'nama_orang_tua' => $this->request->getPost('nama_orang_tua'),
             'is_valid' => $this->request->getPost('is_valid'),
-            'nik' => $this->request->getPost('nik')
+            'nik' => $this->request->getPost('nik'),
+            'no_wa' => $this->request->getPost('no_wa')
         ]);
 
         if ($this->request->getPost('password') != '') {

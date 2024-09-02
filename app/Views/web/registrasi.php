@@ -56,13 +56,21 @@
                 <div class="card-body">
                   <form action="/Registrasi" method="post" id="registrasi">
                     <div class="form-floating mb-3">
-                      <input class="form-control" id="nik" type="text" name="nik" data-inputmask="'mask': '9999999999999999'"
-                        required />
+                      <input class="form-control" id="nik" type="text" name="nik"
+                        data-inputmask="'mask': '9999999999999999'" required />
                       <label for="nik">NIK</label>
                     </div>
                     <div class="form-floating mb-3">
                       <input class="form-control" id="nama" type="text" name="nama" required />
                       <label for="nama">Nama Orang Tua/Wali</label>
+                    </div>
+                    <div class="mb-3">
+                      <label for="no_wa" class="form-label">Nomor Whatsapp</label>
+                      <div class="input-group">
+                        <span class="input-group-text" id="basic-addon3">+62</span>
+                        <input type="text" class="form-control" id="no_wa" aria-describedby="basic-addon3" name="no_wa"
+                          required>
+                      </div>
                     </div>
                     <div class="form-floating mb-3">
                       <input class="form-control" id="nisn" type="text" name="nisn"

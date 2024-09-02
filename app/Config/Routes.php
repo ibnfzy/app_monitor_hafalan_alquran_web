@@ -67,6 +67,8 @@ $routes->group('GuruPanel', function (RouteCollection $routes) {
   $routes->get('RekapNilai/Delete/(:num)', 'GuruController::rekap_delete/$1');
   $routes->post('GetBlobURI/(:num)', 'GuruController::getBlobPDF/$1');
   $routes->get('RekapNilai/(:num)', 'GuruController::see_blob_pdf/$1');
+
+  $routes->get('Feedback', 'GuruController::feedback');
 });
 
 $routes->group('OperatorPanel', function (RouteCollection $routes) {
@@ -119,4 +121,6 @@ $routes->group('API', function (RouteCollection $routes) {
   $routes->post('Token', 'API::save_token_device');
   $routes->get('Notifikasi/(:num)', 'API::show_all_notifikasi/$1');
   $routes->post('Notfikasi', 'GuruController::test_notifikasi');
+  $routes->get('Feedback/(:num)', 'API::get_feedback_guru_orang_tua/$1');
+  $routes->post('Feedback', 'API::insert_feedback');
 });

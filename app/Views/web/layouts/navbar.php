@@ -12,7 +12,7 @@
           <a class="nav-link mx-2" aria-current="page" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link mx-2" aria-current="page" href="/Kegiatan">Kegiatan</a>
+          <a class="nav-link mx-2" aria-current="page" href="/Kegiatan">Informasi</a>
         </li>
         <li class="nav-item">
           <a class="nav-link mx-2" aria-current="page"

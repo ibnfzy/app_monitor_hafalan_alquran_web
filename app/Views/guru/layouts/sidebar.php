@@ -16,6 +16,10 @@
           <div class="sb-nav-link-icon text-white"><i class="fas fa-chart-area"></i></div>
           Grafik
         </a>
+        <a href="/GuruPanel/Feedback" class="nav-link text-white">
+          <div class="sb-nav-link-icon text-white"><i class="fa-regular fa-comment"></i></div>
+          Feedback
+        </a>
         <a class="nav-link collapsed text-white" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
           aria-expanded="false" aria-controls="collapseLayouts">
           <div class="sb-nav-link-icon text-white"><i class="fas fa-columns"></i></div>
@@ -44,8 +48,6 @@ $getHalaqoh = $db->table('halaqoh')->where('id_guru', session()->get('id_guru'))
 $getSiswa = $db->table('siswa')->where('id_halaqoh', $getHalaqoh['id_halaqoh'])->get()->getResultArray();
 ?>
 
-
-
 <div class="modal fade" id="createRekap" tabindex="-1" aria-labelledby="createRekapLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -61,49 +63,49 @@ $getSiswa = $db->table('siswa')->where('id_halaqoh', $getHalaqoh['id_halaqoh'])-
                 <label for="siswa" class="form-label">Pilih Siswa</label>
                 <select class="select2-siswa form-control col-12" style="width: 100%;" name="id_siswa" required>
                   <?php foreach ($getSiswa as $item) : ?>
-                  <option value="<?= $item['id_siswa'] ?>"><?= $item['nama_siswa'] . ' : NISN ' . $item['nisn']; ?>
-                  </option>
+                    <option value="<?= $item['id_siswa'] ?>"><?= $item['nama_siswa'] . ' : NISN ' . $item['nisn']; ?>
+                    </option>
                   <?php endforeach ?>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="pres_adab_halaqoh" class="form-label">Prestasi Adab Halaqoh</label>
                 <select name="pres_adab_halaqoh" id="pres_adab_halaqoh" class="form-select" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
+                  <option value="A">A (90-100)</option>
+                  <option value="B">B (80-90)</option>
+                  <option value="C">C (70-80)</option>
+                  <option value="D">D (60-70)</option>
+                  <option value="E">E < 60</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="pres_tahsin" class="form-label">Prestasi Tahsin</label>
                 <select name="pres_tahsin" id="pres_tahsin" class="form-select" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
+                  <option value="A">A (90-100)</option>
+                  <option value="B">B (80-90)</option>
+                  <option value="C">C (70-80)</option>
+                  <option value="D">D (60-70)</option>
+                  <option value="E">E < 60</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="pres_tahfidz" class="form-label">Prestasi Tahfidz</label>
                 <select name="pres_tahfidz" id="pres_tahfidz" class="form-select" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
+                  <option value="A">A (90-100)</option>
+                  <option value="B">B (80-90)</option>
+                  <option value="C">C (70-80)</option>
+                  <option value="D">D (60-70)</option>
+                  <option value="E">E < 60</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="pres_murojaah" class="form-label">Prestasi Muroja'ah</label>
                 <select name="pres_murojaah" id="pres_murojaah" class="form-select" required>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
+                  <option value="A">A (90-100)</option>
+                  <option value="B">B (80-90)</option>
+                  <option value="C">C (70-80)</option>
+                  <option value="D">D (60-70)</option>
+                  <option value="E">E < 60</option>
                 </select>
               </div>
             </div>
@@ -122,13 +124,15 @@ $getSiswa = $db->table('siswa')->where('id_halaqoh', $getHalaqoh['id_halaqoh'])-
                 <input type="number" class="form-control" id="nilai_tahsin" name="nilai_tahsin" required>
               </div>
 
-              <div class="mb-3" id="actionParent">
+              <input type="hidden" name="action" id="action" value="both">
+
+              <!-- <div class="mb-3" id="actionParent">
                 <label for="action" class="form-label">Pilih Aksi</label>
                 <select class="form-select" id="action" name="action" required>
                   <option value="download">Download</option>
                   <option value="both">Download dan Simpan</option>
                 </select>
-              </div>
+              </div> -->
             </div>
           </div>
 

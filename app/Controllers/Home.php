@@ -79,6 +79,13 @@ class Home extends BaseController
                     'required' => 'Nama tidak boleh kosong',
                     'max_length' => 'Nama terlalu panjang'
                 ]
+            ],
+            'no_wa' => [
+                'rules' => 'required|is_unique[orang_tua.no_wa]',
+                'errors' => [
+                    'required' => 'Nomor WA tidak boleh kosong',
+                    'is_unique' => 'Nomor WA sudah terdaftar'
+                ]
             ]
         ];
 
@@ -96,7 +103,8 @@ class Home extends BaseController
             'nik' => $this->request->getPost('nik'),
             'nisn_anak' => $this->request->getPost('nisn'),
             'password' => password_hash((string) $this->request->getPost('password'), PASSWORD_BCRYPT),
-            'nama_orang_tua' => $this->request->getPost('nama')
+            'nama_orang_tua' => $this->request->getPost('nama'),
+            'no_wa' => '62' . $this->request->getPost('no_wa')
         ]);
 
         return redirect()->to(base_url('Registrasi'))->with('type-status', 'success')->with('message', 'Registrasi Berhasil, silahkan menunggu operator memvalidasi akun anda');

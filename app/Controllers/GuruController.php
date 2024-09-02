@@ -1078,4 +1078,11 @@ class GuruController extends BaseController
 
         return $this->respond([], 200, 'Berhasil');
     }
+
+    public function feedback()
+    {
+        return view('guru/feedback', [
+            'data' => $this->db->table('feedback')->where('feedback.id_guru', session()->get('id_guru'))->join('guru', 'guru.id_guru = feedback.id_guru', 'left')->join('siswa', 'siswa.nisn = feedback.nisn', 'left')->join('orang_tua', 'orang_tua.id_orang_tua = feedback.id_orang_tua', 'left')->get()->getResultArray()
+        ]);
+    }
 }
